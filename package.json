@@ -24,7 +24,7 @@
     "*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "@types/prettier": "^3",
+    "@types/prettier": "^3.0.0",
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "moker": "1.4.0",
