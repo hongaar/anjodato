@@ -1,5 +1,6 @@
 import {
   collection,
+  connectFirestoreEmulator,
   deleteDoc,
   doc,
   DocumentData,
@@ -20,7 +21,15 @@ import { useFirebase } from "./useFirebase";
 export function useFirestore() {
   const firebase = useFirebase();
   const firestore = useMemo(() => {
-    return getFirestore(firebase.app);
+    const db = getFirestore(firebase.app);
+
+    if (process.env.NODE_ENV === "development") {
+      try {
+        connectFirestoreEmulator(db, "127.0.0.1", 8080);
+      } catch {}
+    }
+
+    return db;
   }, [firebase]);
 
   return firestore;

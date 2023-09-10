@@ -62,7 +62,6 @@ __metadata:
     "@types/react-dom": ^18.0.0
     date-fns: ^2.29.3
     firebase: ^9.10.0
-    npm-run-all: ^4.1.5
     randomcolor: ^0.6.2
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4510,6 +4509,7 @@ __metadata:
     husky: 8.0.3
     lint-staged: 14.0.1
     moker: 1.4.0
+    npm-run-all: 4.1.5
     prettier: 3.0.3
   languageName: unknown
   linkType: soft
@@ -11484,7 +11484,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"npm-run-all@npm:^4.1.5":
+"npm-run-all@npm:4.1.5":
   version: 4.1.5
   resolution: "npm-run-all@npm:4.1.5"
   dependencies:
