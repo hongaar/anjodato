@@ -1,10 +1,24 @@
 {
   "name": "anjodato",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
+  "repository": "hongaar:anjodato",
+  "license": "MIT",
+  "author": "Joram van den Boezem <joram@vandenboezem.nl>",
   "workspaces": [
     "web",
     "functions"
   ],
-  "packageManager": "yarn@3.2.3"
+  "scripts": {
+    "build": "echo 'not implemented'",
+    "test": "echo 'not implemented'"
+  },
+  "devDependencies": {
+    "moker": "1.4.0"
+  },
+  "packageManager": "yarn@3.6.3",
+  "moker": {
+    "plugins": [],
+    "scoped": true
+  }
 }
