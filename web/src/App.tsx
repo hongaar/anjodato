@@ -1,9 +1,9 @@
-import { Route, Switch } from "wouter"
-import { Session } from "./components"
-import { Admin, Exercises, Workshops } from "./pages"
+import { Route, Switch } from "wouter";
+import { Session } from "./components";
+import { Admin, Exercises, Workshops } from "./pages";
 
 export function App() {
-  console.debug("Rendering App")
+  console.debug("Rendering App");
 
   return (
     <div className="app">
@@ -14,5 +14,5 @@ export function App() {
         <Route component={Workshops} />
       </Switch>
     </div>
-  )
+  );
 }

@@ -1,11 +1,11 @@
-import { useState } from "react"
-import { useSession } from "../hooks"
+import { useState } from "react";
+import { useSession } from "../hooks";
 
 export function Session() {
-  console.debug("Rendering Session")
+  console.debug("Rendering Session");
 
-  const { name, start, end } = useSession()
-  const [username, setUsername] = useState("")
+  const { name, start, end } = useSession();
+  const [username, setUsername] = useState("");
 
   return (
     <div className="session">
@@ -16,8 +16,8 @@ export function Session() {
       ) : (
         <form
           onSubmit={(e) => {
-            e.preventDefault()
-            start(username)
+            e.preventDefault();
+            start(username);
           }}
         >
           <input
@@ -29,5 +29,5 @@ export function Session() {
         </form>
       )}
     </div>
-  )
+  );
 }

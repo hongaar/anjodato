@@ -1,2 +1,2 @@
-export * from "./Firebase"
-export * from "./Session"
+export * from "./Firebase";
+export * from "./Session";

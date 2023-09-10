@@ -1,13 +1,13 @@
-import { calculateTotalScore, Collection, DocWithId } from "../api"
+import { calculateTotalScore, Collection, DocWithId } from "../api";
 
 type Props = {
-  exercises: DocWithId<Collection.Exercises>[]
-  sessions: DocWithId<Collection.Sessions>[]
-  activeSession?: DocWithId<Collection.Sessions>
-}
+  exercises: DocWithId<Collection.Exercises>[];
+  sessions: DocWithId<Collection.Sessions>[];
+  activeSession?: DocWithId<Collection.Sessions>;
+};
 
 export function Podium({ sessions, exercises, activeSession }: Props) {
-  console.debug("Rendering Podium")
+  console.debug("Rendering Podium");
 
   return (
     <div className="player-list">
@@ -16,9 +16,9 @@ export function Podium({ sessions, exercises, activeSession }: Props) {
           .filter((session) => session.online === true)
           .map(calculateTotalScore(exercises, sessions))
           .sort((a, b) => {
-            if (a.total_score < b.total_score) return 1
-            if (a.total_score > b.total_score) return -1
-            return 0
+            if (a.total_score < b.total_score) return 1;
+            if (a.total_score > b.total_score) return -1;
+            return 0;
           })
           .map((session, index) => (
             <li
@@ -47,5 +47,5 @@ export function Podium({ sessions, exercises, activeSession }: Props) {
           ))}
       </ul>
     </div>
-  )
+  );
 }

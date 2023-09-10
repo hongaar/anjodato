@@ -1,25 +1,25 @@
-import { where } from "firebase/firestore"
-import { Collection, hasScore } from "../api"
-import { ExerciseScores, ExerciseTimer, Podium } from "../components"
-import { useCollection, useDocument, useQuery, useSession } from "../hooks"
+import { where } from "firebase/firestore";
+import { Collection, hasScore } from "../api";
+import { ExerciseScores, ExerciseTimer, Podium } from "../components";
+import { useCollection, useDocument, useQuery, useSession } from "../hooks";
 
 export function Exercises({ params }: { params: { workshop: string } }) {
-  console.debug("Rendering Exercises")
+  console.debug("Rendering Exercises");
 
-  const workshop = useDocument(Collection.Workshops, params.workshop)
-  const activeExerciseId = workshop?.activeExcercise || "UNKNOWN"
+  const workshop = useDocument(Collection.Workshops, params.workshop);
+  const activeExerciseId = workshop?.activeExcercise || "UNKNOWN";
   const exercises = useQuery(
     Collection.Exercises,
-    where("workshop", "==", params.workshop)
-  )
+    where("workshop", "==", params.workshop),
+  );
   const activeExercise = exercises.find(
-    (exercise) => exercise.id === activeExerciseId
-  )
-  const sessions = useCollection(Collection.Sessions)
-  const { name } = useSession()
-  const activeSession = sessions.find((session) => session.id === name)
+    (exercise) => exercise.id === activeExerciseId,
+  );
+  const sessions = useCollection(Collection.Sessions);
+  const { name } = useSession();
+  const activeSession = sessions.find((session) => session.id === name);
 
-  const hasFinished = hasScore(activeExerciseId, activeSession)
+  const hasFinished = hasScore(activeExerciseId, activeSession);
 
   return (
     <div className="exercises">
@@ -60,5 +60,5 @@ export function Exercises({ params }: { params: { workshop: string } }) {
         </>
       )}
     </div>
-  )
+  );
 }

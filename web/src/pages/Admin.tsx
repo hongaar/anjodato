@@ -1,7 +1,7 @@
-import { orderBy, Timestamp, where } from "firebase/firestore"
-import { useState } from "react"
-import { Collection, sluggify } from "../api"
-import { Podium } from "../components"
+import { orderBy, Timestamp, where } from "firebase/firestore";
+import { useState } from "react";
+import { Collection, sluggify } from "../api";
+import { Podium } from "../components";
 import {
   useCollection,
   useDocDeleter,
@@ -9,42 +9,42 @@ import {
   useDocWriter,
   useQuery,
   useSession,
-} from "../hooks"
+} from "../hooks";
 
 export function Admin({ params }: { params: { workshop: string } }) {
-  console.debug("Rendering Admin")
+  console.debug("Rendering Admin");
 
   const exercises = useQuery(
     Collection.Exercises,
     where("workshop", "==", params.workshop),
-    orderBy("order")
-  )
-  const workshop = useDocument(Collection.Workshops, params.workshop)
-  const writeWorkshop = useDocWriter(Collection.Workshops)
-  const activeExerciseId = workshop?.activeExcercise
-  const writeExercise = useDocWriter(Collection.Exercises)
-  const deleteExercise = useDocDeleter(Collection.Exercises)
-  const sessions = useCollection(Collection.Sessions)
-  const { name } = useSession()
-  const [newExerciseName, setNewExerciseName] = useState("")
-  const activeSession = sessions.find((session) => session.id === name)
+    orderBy("order"),
+  );
+  const workshop = useDocument(Collection.Workshops, params.workshop);
+  const writeWorkshop = useDocWriter(Collection.Workshops);
+  const activeExerciseId = workshop?.activeExcercise;
+  const writeExercise = useDocWriter(Collection.Exercises);
+  const deleteExercise = useDocDeleter(Collection.Exercises);
+  const sessions = useCollection(Collection.Sessions);
+  const { name } = useSession();
+  const [newExerciseName, setNewExerciseName] = useState("");
+  const activeSession = sessions.find((session) => session.id === name);
   const maxOrder = exercises.reduce((prev, current) => {
-    return current.order > prev ? current.order : prev
-  }, 0)
+    return current.order > prev ? current.order : prev;
+  }, 0);
 
   function makeActive(exerciseId: string | null) {
-    writeWorkshop(params.workshop, { activeExcercise: exerciseId })
+    writeWorkshop(params.workshop, { activeExcercise: exerciseId });
   }
 
   function startTimer(exerciseId: string | null) {
     writeExercise(exerciseId || "UNKNOWN", {
       started_at: Timestamp.fromDate(new Date()),
-    })
+    });
   }
 
   function makeActiveAndStartTimer(exerciseId: string | null) {
-    makeActive(exerciseId)
-    startTimer(exerciseId)
+    makeActive(exerciseId);
+    startTimer(exerciseId);
   }
 
   function addExercise() {
@@ -52,12 +52,12 @@ export function Admin({ params }: { params: { workshop: string } }) {
       workshop: params.workshop,
       name: newExerciseName,
       order: maxOrder + 1,
-    })
-    setNewExerciseName("")
+    });
+    setNewExerciseName("");
   }
 
   if (!workshop) {
-    return <p>Workshop not found</p>
+    return <p>Workshop not found</p>;
   }
 
   return (
@@ -108,14 +108,14 @@ export function Admin({ params }: { params: { workshop: string } }) {
                   .reduce(
                     ([finished, total], session) => {
                       if (session.online) {
-                        total = total + 1
+                        total = total + 1;
                       }
                       if (session.scores && session.scores[exercise.id] > 0) {
-                        finished = finished + 1
+                        finished = finished + 1;
                       }
-                      return [finished, total]
+                      return [finished, total];
                     },
-                    [0, 0]
+                    [0, 0],
                   )
                   .join("/")}{" "}
               </td>
@@ -132,8 +132,8 @@ export function Admin({ params }: { params: { workshop: string } }) {
             <td>
               <form
                 onSubmit={(e) => {
-                  e.preventDefault()
-                  addExercise()
+                  e.preventDefault();
+                  addExercise();
                 }}
               >
                 <input
@@ -164,5 +164,5 @@ export function Admin({ params }: { params: { workshop: string } }) {
         activeSession={activeSession}
       />
     </div>
-  )
+  );
 }

@@ -1,36 +1,36 @@
-import { createContext, useEffect, useState } from "react"
-import { FirebaseApp, loadFirebase } from "../api"
-import { Loading } from "../components"
+import { createContext, useEffect, useState } from "react";
+import { FirebaseApp, loadFirebase } from "../api";
+import { Loading } from "../components";
 
 type Props = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 type Context = {
-  app: FirebaseApp
-}
+  app: FirebaseApp;
+};
 
 // WARNING: side-effect
-export const firebasePromise = loadFirebase()
+export const firebasePromise = loadFirebase();
 
-export const FirebaseContext = createContext<Context>(null as any)
+export const FirebaseContext = createContext<Context>(null as any);
 
 export function FirebaseProvider({ children }: Props) {
-  console.debug("Rendering FirebaseProvider")
+  console.debug("Rendering FirebaseProvider");
 
-  const [value, setValue] = useState<Context>()
+  const [value, setValue] = useState<Context>();
 
   useEffect(() => {
-    firebasePromise.then(setValue)
-  }, [])
+    firebasePromise.then(setValue);
+  }, []);
 
   if (!value) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
     <FirebaseContext.Provider value={value}>
       {children}
     </FirebaseContext.Provider>
-  )
+  );
 }

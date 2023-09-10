@@ -1,11 +1,11 @@
-import { Link } from "wouter"
-import { Collection } from "../api"
-import { useCollection } from "../hooks"
+import { Link } from "wouter";
+import { Collection } from "../api";
+import { useCollection } from "../hooks";
 
 export function Workshops() {
-  console.debug("Rendering Workshops")
+  console.debug("Rendering Workshops");
 
-  const workshops = useCollection(Collection.Workshops)
+  const workshops = useCollection(Collection.Workshops);
 
   return (
     <div className="workshops">
@@ -18,5 +18,5 @@ export function Workshops() {
         ))}
       </ul>
     </div>
-  )
+  );
 }

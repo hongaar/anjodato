@@ -10,15 +10,32 @@
     "functions"
   ],
   "scripts": {
-    "build": "echo 'not implemented'",
-    "test": "echo 'not implemented'"
+    "build": "yarn workspaces foreach --topological --verbose run build",
+    "build:watch": "yarn workspaces foreach --parallel --interlaced run build:watch",
+    "format": "prettier --write --ignore-unknown .",
+    "format:check": "prettier --check --ignore-unknown .",
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
-    "moker": "1.4.0"
+    "@types/prettier": "^3",
+    "husky": "8.0.3",
+    "lint-staged": "14.0.1",
+    "moker": "1.4.0",
+    "prettier": "3.0.3"
   },
   "packageManager": "yarn@3.6.3",
   "moker": {
-    "plugins": [],
+    "plugins": [
+      "typescript",
+      "prettier",
+      "lint-staged",
+      "husky",
+      "github-actions",
+      "dependabot"
+    ],
     "scoped": true
   }
 }

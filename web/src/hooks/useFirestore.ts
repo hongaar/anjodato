@@ -8,124 +8,124 @@ import {
   QueryConstraint,
   QuerySnapshot,
   setDoc,
-} from "firebase/firestore"
-import { useCallback, useMemo } from "react"
+} from "firebase/firestore";
+import { useCallback, useMemo } from "react";
 import {
   useCollection as useBaseCollection,
   useDocumentData as useBaseDocument,
-} from "react-firebase-hooks/firestore"
-import { AddId, Collection, Doc } from "../api"
-import { useFirebase } from "./useFirebase"
+} from "react-firebase-hooks/firestore";
+import { AddId, Collection, Doc } from "../api";
+import { useFirebase } from "./useFirebase";
 
 export function useFirestore() {
-  const firebase = useFirebase()
+  const firebase = useFirebase();
   const firestore = useMemo(() => {
-    return getFirestore(firebase.app)
-  }, [firebase])
+    return getFirestore(firebase.app);
+  }, [firebase]);
 
-  return firestore
+  return firestore;
 }
 
 export function useCollectionRef(collectionId: Collection) {
-  const firestore = useFirestore()
+  const firestore = useFirestore();
 
   return useMemo(
     () => collection(firestore, collectionId),
-    [collectionId, firestore]
-  )
+    [collectionId, firestore],
+  );
 }
 
 export function useDocRef(collectionId: Collection, docId: string) {
-  const firestore = useFirestore()
+  const firestore = useFirestore();
 
   return useMemo(
     () => doc(collection(firestore, collectionId), docId),
-    [collectionId, docId, firestore]
-  )
+    [collectionId, docId, firestore],
+  );
 }
 
 export function useCollection<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionRef(collectionId)
+  const collectionRef = useCollectionRef(collectionId);
   const [snapshot, loading, error] = useBaseCollection<Doc<T>>(
-    collectionRef as any
-  )
+    collectionRef as any,
+  );
 
   if (error) {
-    console.error(error)
+    console.error(error);
   }
 
   if (loading || !snapshot) {
-    return []
+    return [];
   }
 
-  return getCollectionData(snapshot)
+  return getCollectionData(snapshot);
 }
 
 export function useQuery<T extends Collection>(
   collectionId: T,
   ...queryConstraints: QueryConstraint[]
 ) {
-  const collectionRef = useCollectionRef(collectionId)
+  const collectionRef = useCollectionRef(collectionId);
   const [snapshot, loading, error] = useBaseCollection<Doc<T>>(
-    query(collectionRef as any, ...queryConstraints)
-  )
+    query(collectionRef as any, ...queryConstraints),
+  );
 
   if (error) {
-    console.error(error)
+    console.error(error);
   }
 
   if (loading || !snapshot) {
-    return []
+    return [];
   }
 
-  return getCollectionData(snapshot)
+  return getCollectionData(snapshot);
 }
 
 export function useDocument<T extends Collection>(
   collectionId: T,
-  docId: string
+  docId: string,
 ) {
-  const docRef = useDocRef(collectionId, docId)
-  const [data, loading, error] = useBaseDocument<Doc<T>>(docRef as any)
+  const docRef = useDocRef(collectionId, docId);
+  const [data, loading, error] = useBaseDocument<Doc<T>>(docRef as any);
 
   if (error) {
-    console.error(error)
+    console.error(error);
   }
 
   if (loading || !data) {
-    return null
+    return null;
   }
 
-  return data
+  return data;
 }
 
 export function useDocWriter<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionRef(collectionId)
+  const collectionRef = useCollectionRef(collectionId);
 
   return useCallback(
     async function (docId: string, data: Partial<Doc<T>>) {
-      await setDoc(doc(collectionRef, docId), data, { merge: true })
+      await setDoc(doc(collectionRef, docId), data, { merge: true });
     },
-    [collectionRef]
-  )
+    [collectionRef],
+  );
 }
 
 export function useDocDeleter(collectionId: Collection) {
-  const collectionRef = useCollectionRef(collectionId)
+  const collectionRef = useCollectionRef(collectionId);
 
   return useCallback(
     async function (docId: string) {
-      await deleteDoc(doc(collectionRef, docId))
+      await deleteDoc(doc(collectionRef, docId));
     },
-    [collectionRef]
-  )
+    [collectionRef],
+  );
 }
 
 function getCollectionData<T extends DocumentData>(snapshot: QuerySnapshot<T>) {
-  const data: AddId<T>[] = []
+  const data: AddId<T>[] = [];
   snapshot.forEach(function (doc) {
-    data.push({ id: doc.id, ...doc.data() } as any)
-  })
+    data.push({ id: doc.id, ...doc.data() } as any);
+  });
 
-  return data
+  return data;
 }

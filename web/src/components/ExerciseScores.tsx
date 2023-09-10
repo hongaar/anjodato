@@ -1,14 +1,14 @@
-import { formatDuration, intervalToDuration } from "date-fns"
-import { Collection, DocWithId, sortSessionsForExercise } from "../api"
+import { formatDuration, intervalToDuration } from "date-fns";
+import { Collection, DocWithId, sortSessionsForExercise } from "../api";
 
 type Props = {
-  exerciseId: string
-  activeSession: DocWithId<Collection.Sessions>
-  sessions: DocWithId<Collection.Sessions>[]
-}
+  exerciseId: string;
+  activeSession: DocWithId<Collection.Sessions>;
+  sessions: DocWithId<Collection.Sessions>[];
+};
 
 export function ExerciseScores({ exerciseId, activeSession, sessions }: Props) {
-  console.debug("Rendering ExerciseScores")
+  console.debug("Rendering ExerciseScores");
 
   return (
     <div className="player-list">
@@ -33,12 +33,12 @@ export function ExerciseScores({ exerciseId, activeSession, sessions }: Props) {
                     intervalToDuration({
                       start: 0,
                       end: session.scores[exerciseId] * 1000,
-                    })
+                    }),
                   )
                 : "not finished yet"}
             </li>
           ))}
       </ul>
     </div>
-  )
+  );
 }
