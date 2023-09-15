@@ -1,12 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { initWakelock } from "./api";
 import { App } from "./App";
-import { FirebaseProvider, SessionProvider } from "./context";
+import { FirebaseProvider } from "./context";
 import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
-
-initWakelock();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement,
@@ -14,9 +11,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <FirebaseProvider>
-      <SessionProvider>
-        <App />
-      </SessionProvider>
+      <App />
     </FirebaseProvider>
   </React.StrictMode>,
 );

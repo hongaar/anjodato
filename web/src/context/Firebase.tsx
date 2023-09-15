@@ -16,7 +16,7 @@ export const firebasePromise = loadFirebase();
 export const FirebaseContext = createContext<Context>(null as any);
 
 export function FirebaseProvider({ children }: Props) {
-  console.debug("Rendering FirebaseProvider");
+  console.debug("Rendering context FirebaseProvider");
 
   const [value, setValue] = useState<Context>();
 

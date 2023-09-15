@@ -1,127 +1,30 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&family=Mooli&display=swap");
+
+:root {
+  font-size: 20px;
+}
 
 body,
 button,
 input {
-  font-family: "Noto Sans Mono", monospace;
-  text-align: center;
+  font-family: "Mooli", sans-serif;
 }
 
-/* pages */
-
-.exercises {
-  h1 {
-    .prefix {
-      font-weight: normal;
-    }
-  }
-
-  button.finish {
-    width: 100%;
-    font-size: 3rem;
-    height: 50vh;
-    background-color: lightgreen;
-  }
+h1,
+h2,
+h3 {
+  font-family: "Lora", serif;
+  font-weight: normal;
 }
 
-.admin {
-  button {
-    &.active {
-      font-weight: bold;
-    }
-  }
-
-  table {
-    display: inline-block;
-
-    tr {
-      &.active {
-        font-weight: bold;
-      }
-
-      &.started {
-        color: gray;
-      }
-    }
-
-    th,
-    td {
-      text-align: left;
-    }
-  }
+h1 {
+  font-size: 3em;
 }
 
-/* components */
-
-.session {
-  display: flex;
-  justify-content: flex-end;
-
-  form {
-    input {
-      width: 8rem;
-    }
-  }
+h2 {
+  font-size: 2em;
 }
 
-.player-list {
-  ul {
-    margin: 2rem 0 0 0;
-    padding: 0;
-
-    li {
-      list-style: none;
-      margin: 0 0 1rem 0;
-
-      font-size: 1.5rem;
-
-      animation: appear 1s linear;
-      animation-delay: 10s;
-      animation-fill-mode: both;
-
-      &:nth-child(1) {
-        animation-delay: 0s;
-      }
-      &:nth-child(2) {
-        animation-delay: 2s;
-      }
-      &:nth-child(3) {
-        animation-delay: 4s;
-      }
-      &:nth-child(4) {
-        animation-delay: 6s;
-      }
-      &:nth-child(5) {
-        animation-delay: 8s;
-      }
-
-      .emoji {
-        display: inline-block;
-        margin: 0 0.5rem;
-      }
-
-      .badge {
-        margin: 0 1rem;
-        padding: 0.2rem 0.4rem;
-        border-radius: 0.5rem;
-      }
-
-      &.active {
-        font-weight: bold;
-      }
-    }
-  }
-}
-
-/* animations */
-
-@keyframes appear {
-  from {
-    transform: scale(0);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
+h3 {
+  font-size: 1.5em;
 }

@@ -19,6 +19,8 @@ import { AddId, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
 
 export function useFirestore() {
+  console.debug("Called useFirestore");
+
   const firebase = useFirebase();
   const firestore = useMemo(() => {
     const db = getFirestore(firebase.app);

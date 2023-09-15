@@ -1,28 +1,18 @@
-import { Timestamp } from "firebase/firestore";
-
 export enum Collection {
-  Workshops = "workshops",
-  Exercises = "exercises",
-  Sessions = "sessions",
+  Updates = "updates",
 }
 
 type DocEnum = {
-  [Collection.Workshops]: {
-    name: string;
-    currentExerciseId: string | null;
-    activeExcercise: string | null;
-  };
-  [Collection.Exercises]: {
-    name: string;
-    order: number;
-    workshop: string;
-    started_at: Timestamp;
-  };
-  [Collection.Sessions]: {
-    online: boolean;
-    color: string;
-    scores: {
-      [exerciseId: string]: number;
+  [Collection.Updates]: {
+    location: {
+      geo: string;
+    };
+    description: {
+      title: string;
+      body: string;
+    };
+    photos: {
+      album: string;
     };
   };
 };
