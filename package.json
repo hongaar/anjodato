@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/prettier": "^3.0.0",
+    "firebase-tools": "12.5.4",
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
     "moker": "1.4.0",

@@ -8,15 +8,20 @@ export function Updates() {
   const updates = useCollection(Collection.Updates);
 
   return (
-    <div className="updates">
-      <h1>Updates</h1>
-      <ul>
-        {updates?.map((update) => (
-          <li key={update.id}>
-            <Link href={`/${update.id}`}>{update.description.title}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <main className="updates">
+        <h1>Updates</h1>
+        <ul>
+          {updates?.map((update) => (
+            <li key={update.id}>
+              <Link href={`/${update.id}`}>{update.description.title}</Link>
+            </li>
+          ))}
+        </ul>
+      </main>
+      <footer>
+        <Link href="/admin">admin</Link>
+      </footer>
+    </>
   );
 }
