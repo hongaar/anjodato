@@ -18,6 +18,8 @@ import {
 import { AddId, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
 
+const USE_EMULATOR = true;
+
 export function useFirestore() {
   console.debug("Called useFirestore");
 
@@ -25,9 +27,9 @@ export function useFirestore() {
   const firestore = useMemo(() => {
     const db = getFirestore(firebase.app);
 
-    if (process.env.NODE_ENV === "development") {
+    if (USE_EMULATOR && process.env.NODE_ENV === "development") {
       try {
-        connectFirestoreEmulator(db, "127.0.0.1", 8080);
+        connectFirestoreEmulator(db, "localhost", 8080);
       } catch {}
     }
 

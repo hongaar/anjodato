@@ -1,2 +1,3 @@
-export * from "./Admin/index";
+export * from "./Admin";
+export * from "./ErrorBoundary";
 export * from "./Loading";

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./App";
+import { ErrorBoundary } from "./components";
 import { FirebaseProvider } from "./context";
 import "./index.scss";
 import reportWebVitals from "./reportWebVitals";
@@ -10,9 +11,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <FirebaseProvider>
-      <App />
-    </FirebaseProvider>
+    <ErrorBoundary fallback={<h1>Oops, there was an error</h1>}>
+      <FirebaseProvider>
+        <App />
+      </FirebaseProvider>
+    </ErrorBoundary>
   </React.StrictMode>,
 );
 

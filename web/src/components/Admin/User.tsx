@@ -1,7 +1,7 @@
 import { useAuth } from "../../hooks";
 
 export function User() {
-  console.debug("Rendering component User");
+  console.debug("Rendering component Admin/User");
 
   const { login, logout, user } = useAuth();
 

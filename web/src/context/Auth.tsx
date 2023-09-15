@@ -26,6 +26,8 @@ type Context = {
   user: User | null;
 };
 
+const USE_EMULATOR = false;
+
 export const AuthContext = createContext<Context>(null as any);
 
 export function AuthProvider({ children }: Props) {
@@ -37,10 +39,9 @@ export function AuthProvider({ children }: Props) {
   const auth = useMemo(() => {
     const auth = getAuth(firebase.app);
 
-    if (process.env.NODE_ENV === "development") {
+    if (USE_EMULATOR && process.env.NODE_ENV === "development") {
       try {
-        console.log("connect!");
-        connectAuthEmulator(auth, "http://127.0.0.1:9099");
+        connectAuthEmulator(auth, "http://localhost:9099");
       } catch {}
     }
 
@@ -48,7 +49,12 @@ export function AuthProvider({ children }: Props) {
   }, [firebase]);
 
   const provider = useMemo(() => {
-    return new GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
+
+    // See https://developers.google.com/identity/protocols/oauth2/scopes#photoslibrary
+    provider.addScope("https://www.googleapis.com/auth/photoslibrary.readonly");
+
+    return provider;
   }, []);
 
   async function login() {
@@ -62,6 +68,8 @@ export function AuthProvider({ children }: Props) {
     if (!credential) {
       throw new Error("No credential");
     }
+
+    console.log({ result, credential });
 
     const token = credential.accessToken;
 

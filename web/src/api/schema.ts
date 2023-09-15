@@ -5,7 +5,9 @@ export enum Collection {
 type DocEnum = {
   [Collection.Updates]: {
     location: {
-      geo: string;
+      name: string;
+      country: string;
+      place_id: string;
     };
     description: {
       title: string;
