@@ -1,8 +1,8 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
-import { useScript } from "usehooks-ts";
+import { GOOGLE_API_KEY, getAllAlbums } from "../../api";
 import { Collection } from "../../api/schema";
-import { useAuth, useCollection, useDocWriter } from "../../hooks";
+import { useAuth, useCollection, useDocWriter, useGapi } from "../../hooks";
 
 type PlaceResult = {
   label: string;
@@ -19,50 +19,25 @@ type PlaceResult = {
   };
 };
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
-const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
 export function Updates() {
   console.debug("Rendering component Admin/Updates");
 
   const { user } = useAuth();
+  const { isAuthorized, authorize, client } = useGapi();
   const updates = useCollection(Collection.Updates);
   const writeUpdate = useDocWriter(Collection.Updates);
   const [geo, setGeoValue] = useState<PlaceResult | null>(null);
+  const [albums, setAlbums] = useState([] as [string, string][]);
 
-  const status = useScript("https://apis.google.com/js/api.js");
-
-  useEffect(() => {
-    if (!user) {
+  async function getAlbums() {
+    if (!client) {
       return;
     }
 
-    if (typeof gapi !== "undefined") {
-      gapi.load("client", () => {
-        gapi.client
-          .init({
-            apiKey: GOOGLE_API_KEY,
-            clientId: GOOGLE_CLIENT_ID,
-            discoveryDocs: [
-              "https://photoslibrary.googleapis.com/$discovery/rest?version=v1",
-            ],
-            scope: "https://www.googleapis.com/auth/photoslibrary.readonly",
-          })
-          .then(() => {
-            gapi.client.setToken({
-              access_token: user.token,
-            });
-          })
-          .then(() => {
-            console.log({ gapi });
-            return (gapi.client as any).photoslibrary.albums.list();
-          })
-          .then(function (response) {
-            console.log(response.result);
-          });
-      });
-    }
-  }, [status]);
+    setAlbums([["", "Loading..."]]);
+    const albums = await getAllAlbums(client);
+    setAlbums(albums?.map((album) => [album.id!, album.title!]) || []);
+  }
 
   function addUpdate(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -143,8 +118,26 @@ export function Updates() {
         </fieldset>
         <fieldset>
           <legend>Photos:</legend>
+          {isAuthorized ? (
+            <button type="button" onClick={getAlbums}>
+              getAlbums
+            </button>
+          ) : authorize ? (
+            <button type="button" onClick={authorize}>
+              Authorize
+            </button>
+          ) : (
+            "Loading..."
+          )}
+
           <label htmlFor="photos.album">Album:</label>
-          <input id="photos.album" name="photos.album" required type="text" />
+          <select id="photos.album" name="photos.album" required>
+            {albums.map((album) => (
+              <option key={album[0]} value={album[0]}>
+                {album[1]}
+              </option>
+            ))}
+          </select>
         </fieldset>
         <button type="submit">Add update</button>
       </form>

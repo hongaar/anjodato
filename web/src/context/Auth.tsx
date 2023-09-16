@@ -1,41 +1,54 @@
 import {
+  User as FirebaseUser,
   GoogleAuthProvider,
   connectAuthEmulator,
   getAuth,
+  onAuthStateChanged,
   signInWithPopup,
+  signOut,
 } from "firebase/auth";
-import { createContext, useMemo } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "../hooks";
-
-import { useSessionStorage } from "usehooks-ts";
 
 type Props = {
   children: React.ReactNode;
 };
 
 type User = {
-  token: string;
   email: string | null;
   name: string | null;
   picture: string | null;
 } | null;
 
 type Context = {
+  user: User | null;
   login: () => Promise<void>;
   logout: () => Promise<void>;
-  user: User | null;
 };
 
 const USE_EMULATOR = false;
+
+function toUser(user: FirebaseUser | null): User {
+  if (user === null) {
+    return null;
+  }
+
+  return {
+    email: user.email,
+    name: user.displayName,
+    picture: user.photoURL,
+  };
+}
 
 export const AuthContext = createContext<Context>(null as any);
 
 export function AuthProvider({ children }: Props) {
   console.debug("Rendering AuthProvider");
 
-  const [user, setUser] = useSessionStorage<User>("user", null);
+  const [user, setUser] = useState<User>(null);
 
   const firebase = useFirebase();
+
   const auth = useMemo(() => {
     const auth = getAuth(firebase.app);
 
@@ -52,44 +65,59 @@ export function AuthProvider({ children }: Props) {
     const provider = new GoogleAuthProvider();
 
     // See https://developers.google.com/identity/protocols/oauth2/scopes#photoslibrary
-    provider.addScope("https://www.googleapis.com/auth/photoslibrary.readonly");
+    // provider.addScope("https://www.googleapis.com/auth/photoslibrary.readonly");
 
     return provider;
   }, []);
 
-  async function login() {
-    console.debug("Rendering context Auth");
+  // useEffect(() => {
+  //   (window as any).login_from_google = (googleUser: any) => {
+  //     const credential = GoogleAuthProvider.credential(googleUser.credential);
+  //     signInWithCredential(auth, credential);
+  //   };
+  // }, []);
 
-    const result = await signInWithPopup(auth, provider);
-
-    // This gives you a Google Access Token. You can use it to access the Google API.
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-
-    if (!credential) {
-      throw new Error("No credential");
-    }
-
-    console.log({ result, credential });
-
-    const token = credential.accessToken;
-
-    if (!token) {
-      throw new Error("No token");
-    }
-
-    // The signed-in user info.
-    const user = result.user;
-
-    setUser({
-      token,
-      email: user.email,
-      name: user.displayName,
-      picture: user.photoURL,
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(toUser(user));
+      } else {
+        setUser(null);
+      }
     });
+  }, []);
+
+  async function login() {
+    let result;
+
+    try {
+      result = await signInWithPopup(auth, provider);
+    } catch (error: any) {
+      console.error(error);
+    }
+    // // This gives you a Google Access Token. You can use it to access the Google API.
+    // const credential = GoogleAuthProvider.credentialFromResult(result);
+
+    // if (!credential) {
+    //   throw new Error("No credential");
+    // }
+
+    // console.log({ result, credential });
+
+    // const token = credential.accessToken;
+
+    // if (!token) {
+    //   throw new Error("No token");
+    // }
+
+    // // The signed-in user info.
+    // const user = result.user;
+
+    // setUser(toUser(user));
   }
 
   async function logout() {
-    setUser(null);
+    signOut(auth);
   }
 
   return (
