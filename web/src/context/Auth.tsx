@@ -85,7 +85,7 @@ export function AuthProvider({ children }: Props) {
         setUser(null);
       }
     });
-  }, []);
+  }, [auth]);
 
   async function login() {
     let result;
