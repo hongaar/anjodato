@@ -1,4 +1,6 @@
-import { Dashboard } from "../components";
+import { Helmet } from "react-helmet";
+import { Link, Route, Router } from "wouter";
+import { Labels, Navigation, Updates } from "../components/Admin";
 import { AuthProvider } from "../context";
 
 export function Admin({ params }: { params: { workshop: string } }) {
@@ -6,7 +8,25 @@ export function Admin({ params }: { params: { workshop: string } }) {
 
   return (
     <AuthProvider>
-      <Dashboard />
+      <Helmet>
+        <title>Admin</title>
+      </Helmet>
+      <header className="container">
+        <hgroup>
+          <h1>AnJoDaTo</h1>
+          <h2>Admin</h2>
+        </hgroup>
+        <Navigation />
+      </header>
+      <main className="container">
+        <Router base="/admin">
+          <Route path="/updates" component={Updates} />
+          <Route path="/labels" component={Labels} />
+        </Router>
+      </main>
+      <footer className="container">
+        <Link href="/">Go to site</Link>
+      </footer>
     </AuthProvider>
   );
 }

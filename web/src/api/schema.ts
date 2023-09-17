@@ -4,17 +4,26 @@ export enum Collection {
 
 type DocEnum = {
   [Collection.Updates]: {
+    date: {
+      start: string;
+      end: string | null;
+    };
     location: {
       name: string;
       country: string;
       place_id: string;
     };
     description: {
-      title: string;
+      title: string | null;
       body: string;
     };
     photos: {
-      album: string;
+      album: {
+        id: string;
+        url: string;
+        name: string;
+        image_url: string;
+      } | null;
     };
   };
 };

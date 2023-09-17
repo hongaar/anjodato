@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { Collection } from "../api";
 import { useCollection } from "../hooks";
@@ -9,8 +10,16 @@ export function Updates() {
 
   return (
     <>
-      <main className="updates">
-        <h1>Updates</h1>
+      <Helmet>
+        <title>Updates</title>
+      </Helmet>
+      <header className="container">
+        <hgroup>
+          <h1>AnJoDaTo</h1>
+          <h2>Updates</h2>
+        </hgroup>
+      </header>
+      <main className="container">
         <ul>
           {updates?.map((update) => (
             <li key={update.id}>
@@ -19,8 +28,8 @@ export function Updates() {
           ))}
         </ul>
       </main>
-      <footer>
-        <Link href="/admin">admin</Link>
+      <footer className="container">
+        <Link href="/admin">Go to administration</Link>
       </footer>
     </>
   );

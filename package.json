@@ -13,7 +13,7 @@
   "scripts": {
     "start": "run-p \"start:**\"",
     "start:web": "yarn workspace @anjodato/web run start",
-    "start:emulator": "firebase emulators:start",
+    "start:emulator": "firebase emulators:start --only firestore,hosting",
     "build": "yarn workspaces foreach --topological --verbose run build",
     "build:watch": "yarn workspaces foreach --parallel --interlaced run build:watch",
     "format": "prettier --write --ignore-unknown .",
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/prettier": "^3.0.0",
+    "@types/uuid": "^9",
     "firebase-tools": "12.5.4",
     "husky": "8.0.3",
     "lint-staged": "14.0.1",
@@ -43,5 +44,8 @@
       "dependabot"
     ],
     "scoped": true
+  },
+  "dependencies": {
+    "uuid": "9.0.1"
   }
 }

@@ -13,7 +13,9 @@ import {
 import { useCallback, useMemo } from "react";
 import {
   useCollection as useBaseCollection,
+  useCollectionOnce as useBaseCollectionOnce,
   useDocumentData as useBaseDocument,
+  useDocumentDataOnce as useBaseDocumentOnce,
 } from "react-firebase-hooks/firestore";
 import { AddId, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
@@ -74,6 +76,23 @@ export function useCollection<T extends Collection>(collectionId: T) {
   return getCollectionData(snapshot);
 }
 
+export function useCollectionOnce<T extends Collection>(collectionId: T) {
+  const collectionRef = useCollectionRef(collectionId);
+  const [snapshot, loading, error] = useBaseCollectionOnce<Doc<T>>(
+    collectionRef as any,
+  );
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (loading || !snapshot) {
+    return [];
+  }
+
+  return getCollectionData(snapshot);
+}
+
 export function useQuery<T extends Collection>(
   collectionId: T,
   ...queryConstraints: QueryConstraint[]
@@ -100,6 +119,24 @@ export function useDocument<T extends Collection>(
 ) {
   const docRef = useDocRef(collectionId, docId);
   const [data, loading, error] = useBaseDocument<Doc<T>>(docRef as any);
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (loading || !data) {
+    return null;
+  }
+
+  return data;
+}
+
+export function useDocumentOnce<T extends Collection>(
+  collectionId: T,
+  docId: string,
+) {
+  const docRef = useDocRef(collectionId, docId);
+  const [data, loading, error] = useBaseDocumentOnce<Doc<T>>(docRef as any);
 
   if (error) {
     console.error(error);

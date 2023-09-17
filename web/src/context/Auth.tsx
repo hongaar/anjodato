@@ -88,10 +88,8 @@ export function AuthProvider({ children }: Props) {
   }, [auth]);
 
   async function login() {
-    let result;
-
     try {
-      result = await signInWithPopup(auth, provider);
+      await signInWithPopup(auth, provider);
     } catch (error: any) {
       console.error(error);
     }

@@ -1,15 +1,18 @@
+import { Helmet } from "react-helmet";
 import { Route, Switch } from "wouter";
-import { Admin, Updates } from "./pages";
+import { Admin, NotFound, Updates } from "./pages";
 
 export function App() {
   console.debug("Rendering App");
 
   return (
-    <div className="app">
+    <>
+      <Helmet titleTemplate="%s | AnJoDaTo" />
       <Switch>
-        <Route path="/admin" component={Admin} />
-        <Route component={Updates} />
+        <Route path="/admin/:sub*" component={Admin} />
+        <Route path="/" component={Updates} />
+        <Route component={NotFound} />
       </Switch>
-    </div>
+    </>
   );
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useScript, useSessionStorage } from "usehooks-ts";
 import { GOOGLE_API_KEY, GOOGLE_CLIENT_ID } from "../api";
 import { useAuth } from "./useAuth";
@@ -9,8 +9,11 @@ export function useGapi() {
     "access_token",
     null,
   );
-  const [isAuthorized, setIsAuthorized] = useState(false);
   const { user } = useAuth();
+
+  const isAuthorized = useMemo(() => {
+    return accessToken !== null;
+  }, [accessToken]);
 
   const apiStatus = useScript("https://apis.google.com/js/api.js");
   const gsiStatus = useScript("https://accounts.google.com/gsi/client");
@@ -39,7 +42,6 @@ export function useGapi() {
 
         if (accessToken) {
           gapi.client.setToken({ access_token: accessToken });
-          setIsAuthorized(true);
         }
       });
     }
@@ -67,9 +69,13 @@ export function useGapi() {
     client.requestAccessToken();
   }
 
-  if (!ready) {
-    return { isAuthorized, authorize: null, client: null };
+  function unauthorize() {
+    setAccessToken(null);
   }
 
-  return { isAuthorized, authorize, client: gapi.client };
+  if (!ready) {
+    return { isAuthorized, authorize: null, unauthorize: null, client: null };
+  }
+
+  return { isAuthorized, authorize, unauthorize, client: gapi.client };
 }

@@ -1,12 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora&family=Mooli&display=swap");
 
 :root {
-  font-size: 20px;
-}
-
-body,
-button,
-input {
   font-family: "Mooli", sans-serif;
 }
 
@@ -17,14 +11,13 @@ h3 {
   font-weight: normal;
 }
 
-h1 {
-  font-size: 3em;
+// form
+
+fieldset {
+  padding: var(--spacing);
+  border: var(--border-width) solid var(--form-element-border-color);
 }
 
-h2 {
-  font-size: 2em;
-}
-
-h3 {
-  font-size: 1.5em;
+legend {
+  padding: 0 calc(var(--spacing) * 0.5);
 }

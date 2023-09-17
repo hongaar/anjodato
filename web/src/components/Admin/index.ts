@@ -1,3 +1,3 @@
-export * from "./Dashboard";
+export * from "./Labels";
+export * from "./Navigation";
 export * from "./Updates";
-export * from "./User";
