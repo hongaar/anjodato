@@ -20,7 +20,7 @@ import {
 import { AddId, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
 
-const USE_EMULATOR = true;
+const USE_EMULATOR = false;
 
 export function useFirestore() {
   console.debug("Called useFirestore");

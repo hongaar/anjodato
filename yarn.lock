@@ -65,7 +65,7 @@ __metadata:
     "@types/react": ^18.2.21
     "@types/react-dom": ^18.2.7
     "@types/react-helmet": ^6
-    date-fns: ^2.30.0
+    date-fns: 2.30.0
     firebase: ^10.4.0
     randomcolor: ^0.6.2
     react: ^18.2.0
@@ -7121,7 +7121,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns@npm:^2.30.0":
+"date-fns@npm:2.30.0":
   version: 2.30.0
   resolution: "date-fns@npm:2.30.0"
   dependencies:

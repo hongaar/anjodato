@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import { Route, Switch } from "wouter";
-import { Admin, NotFound, Updates } from "./pages";
+import { Admin, Blog, NotFound } from "./pages";
 
 export function App() {
   console.debug("Rendering App");
@@ -10,7 +10,7 @@ export function App() {
       <Helmet titleTemplate="%s | AnJoDaTo" />
       <Switch>
         <Route path="/admin/:sub*" component={Admin} />
-        <Route path="/" component={Updates} />
+        <Route path="/" component={Blog} />
         <Route component={NotFound} />
       </Switch>
     </>

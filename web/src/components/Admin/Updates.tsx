@@ -1,9 +1,9 @@
-import { FormEvent, useState } from "react";
+import { FormEvent, MouseEvent, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useSessionStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
-import { GOOGLE_API_KEY, getAllAlbums } from "../../api";
-import { Collection } from "../../api/schema";
+import { GOOGLE_API_KEY, getAllAlbums, getAllPhotos } from "../../api";
+import { Collection, DocWithId } from "../../api/schema";
 import {
   useAuth,
   useCollection,
@@ -94,10 +94,9 @@ export function Updates() {
               id: albumId,
               url: albums.find((album) => album.id === albumId)?.productUrl!,
               name: albums.find((album) => album.id === albumId)?.title!,
-              image_url: albums.find((album) => album.id === albumId)
-                ?.coverPhotoBaseUrl!,
             }
           : null,
+        items: [],
       },
     });
   }
@@ -122,7 +121,54 @@ export function Updates() {
     setGeoValue(value);
   }
 
-  async function loadPhotos(updateId: string) {}
+  const loadPhotos =
+    (update: DocWithId<Collection.Updates>) =>
+    async (e: MouseEvent<HTMLButtonElement>) => {
+      if (!client || !update.photos.album) {
+        return;
+      }
+
+      const target = e.currentTarget;
+
+      target.setAttribute("aria-busy", "true");
+
+      try {
+        const photos = await getAllPhotos(client, update.photos.album.id);
+        if (photos) {
+          writeUpdate(update.id, {
+            photos: {
+              album: update.photos.album,
+              items: photos.map((photo) => {
+                return {
+                  id: photo.id as string,
+                  url: photo.productUrl as string,
+                  thumb_url: photo.baseUrl as string,
+                  image_url: photo.baseUrl as string,
+                  height: (photo.mediaMetadata?.height as string) || "",
+                  width: (photo.mediaMetadata?.width as string) || "",
+                  created_on:
+                    (photo.mediaMetadata?.creationTime as string) || "",
+                };
+              }),
+            },
+          });
+        }
+      } catch (error) {
+        if (
+          typeof error === "object" &&
+          error !== null &&
+          "status" in error &&
+          error.status === 401
+        ) {
+          alert("Please re-authorize...");
+          unauthorize();
+        } else {
+          throw error;
+        }
+      }
+
+      target.setAttribute("aria-busy", "false");
+    };
 
   return (
     <>
@@ -146,6 +192,7 @@ export function Updates() {
           <label>
             Search:
             <GooglePlacesAutocomplete
+              apiOptions={{ language: "nl" }}
               selectProps={{
                 value: geo as any,
                 onChange: setGeo as any,
@@ -226,43 +273,51 @@ export function Updates() {
           </tr>
         </thead>
         <tbody>
-          {updates
-            // sort by date
-            .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
-            .map((update) => (
-              <tr key={update.id}>
-                <th scope="row">{update.date.start}</th>
-                <td>
-                  <a
-                    href={`https://www.google.com/maps/place/?q=place_id:${update.location.place_id}`}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {update.location.name}
-                  </a>
-                </td>
-                <td>{update.description.title}</td>
-                <td>
-                  <a
-                    href={update.photos.album?.url}
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    {update.photos.album?.name}
-                  </a>
-                </td>
-                <td>
-                  <div className="grid">
-                    <button onClick={() => deleteUpdate(update.id)}>
-                      Delete
-                    </button>
-                    <button onClick={() => loadPhotos(update.id)}>
-                      Reload photos
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+          {updates && updates.length > 0 ? (
+            updates
+              .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
+              .map((update) => (
+                <tr key={update.id}>
+                  <th scope="row">{update.date.start}</th>
+                  <td>
+                    <a
+                      href={`https://www.google.com/maps/place/?q=place_id:${update.location.place_id}`}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {update.location.name}
+                    </a>
+                  </td>
+                  <td>{update.description.title}</td>
+                  <td>
+                    <a
+                      href={update.photos.album?.url}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {update.photos.album?.name}
+                    </a>{" "}
+                    ({update.photos.items.length} photos)
+                  </td>
+                  <td>
+                    <div className="grid">
+                      <button onClick={() => deleteUpdate(update.id)}>
+                        Delete
+                      </button>
+                      <button onClick={loadPhotos(update)}>
+                        Reload photos
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+          ) : (
+            <tr>
+              <th scope="row" colSpan={5} aria-busy="true">
+                Loading...
+              </th>
+            </tr>
+          )}
         </tbody>
       </table>
     </>

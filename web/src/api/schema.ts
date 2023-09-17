@@ -15,15 +15,23 @@ type DocEnum = {
     };
     description: {
       title: string | null;
-      body: string;
+      body: string | null;
     };
     photos: {
       album: {
         id: string;
         url: string;
         name: string;
-        image_url: string;
       } | null;
+      items: {
+        id: string;
+        url: string;
+        thumb_url: string;
+        image_url: string;
+        height: string;
+        width: string;
+        created_on: string;
+      }[];
     };
   };
 };

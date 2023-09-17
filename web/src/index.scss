@@ -4,11 +4,55 @@
   font-family: "Mooli", sans-serif;
 }
 
+// overrides
+
+:root {
+  --block-spacing-vertical: calc(var(--spacing) * 1);
+}
+
+@media (min-width: 576px) {
+  body > footer,
+  body > header,
+  body > main,
+  section {
+    --block-spacing-vertical: calc(var(--spacing) * 1.5);
+  }
+}
+
+@media (min-width: 768px) {
+  body > footer,
+  body > header,
+  body > main,
+  section {
+    --block-spacing-vertical: calc(var(--spacing) * 2);
+  }
+}
+
+// elements
+
 h1,
 h2,
 h3 {
   font-family: "Lora", serif;
   font-weight: normal;
+}
+
+// layout
+
+body > main {
+  padding-top: 0;
+}
+
+main > article:first-child {
+  margin-top: 0;
+}
+
+article hgroup {
+  margin-bottom: 0;
+
+  *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 // form

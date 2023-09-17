@@ -17,7 +17,7 @@ export function NotFound() {
       </header>
       <main className="container">Oopsie</main>
       <footer className="container">
-        <Link href="/">Go to site</Link>
+        <Link href="/">Naar het blog</Link>
       </footer>
     </>
   );
