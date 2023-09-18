@@ -73,12 +73,14 @@ __metadata:
     react-firebase-hooks: ^5.1.1
     react-google-places-autocomplete: 4.0.1
     react-helmet: 6.1.0
+    react-photo-album: 2.3.0
     react-scripts: 5.0.1
     sass: ^1.67.0
     typescript: ^5.2.2
     usehooks-ts: 2.9.1
     web-vitals: ^3.4.0
     wouter: ^2.11.0
+    yet-another-react-lightbox: 3.12.2
   languageName: unknown
   linkType: soft
 
@@ -15479,6 +15481,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-photo-album@npm:2.3.0":
+  version: 2.3.0
+  resolution: "react-photo-album@npm:2.3.0"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 0a9044f5051d66516ffc606a1f95c3f6e07ceff97c778d3f2aaff86591ceba01b3cd3623a6734b2a9dea4e861c6ab6ab3125029cca7c2d759b3ffe0b94bda9c1
+  languageName: node
+  linkType: hard
+
 "react-refresh@npm:^0.11.0":
   version: 0.11.0
   resolution: "react-refresh@npm:0.11.0"
@@ -19175,6 +19186,16 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
   checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
+  languageName: node
+  linkType: hard
+
+"yet-another-react-lightbox@npm:3.12.2":
+  version: 3.12.2
+  resolution: "yet-another-react-lightbox@npm:3.12.2"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 3584595af4eaff6e7bcc7324540d10c1f1a238bbc4fea81cbf87fdb6d439c97d513f46d4f2b009074bd55b69f1339c46fd7ded4a39286d01c73dc8390d2e50d8
   languageName: node
   linkType: hard
 

@@ -1,16 +1,11 @@
-import { FormEvent, MouseEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useSessionStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
-import { GOOGLE_API_KEY, getAllAlbums, getAllPhotos } from "../../api";
-import { Collection, DocWithId } from "../../api/schema";
-import {
-  useAuth,
-  useCollection,
-  useDocDeleter,
-  useDocWriter,
-  useGapi,
-} from "../../hooks";
+import { useLocation } from "wouter";
+import { GOOGLE_API_KEY, getAllAlbums } from "../../api";
+import { Collection } from "../../api/schema";
+import { useAuth, useDocWriter, useDocumentOnce, useGapi } from "../../hooks";
 
 type PlaceResult = {
   label: string;
@@ -27,19 +22,53 @@ type PlaceResult = {
   };
 };
 
-export function Updates() {
-  console.debug("Rendering component Admin/Updates");
+export function UpdatesEdit({ params }: { params: { id: string } }) {
+  console.debug("Rendering component Admin/UpdatesEdit");
 
+  const id = params.id === "new" || !params.id ? null : (params.id as string);
+  const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { isAuthorized, authorize, unauthorize, client } = useGapi();
-  const updates = useCollection(Collection.Updates);
+  const doc = useDocumentOnce(Collection.Updates, id || "x");
   const writeUpdate = useDocWriter(Collection.Updates);
-  const deleteUpdate = useDocDeleter(Collection.Updates);
   const [geo, setGeoValue] = useState<PlaceResult | null>(null);
   const [albums, setAlbums] = useSessionStorage(
     "albums",
     [] as gapi.client.photoslibrary.Album[],
   );
+
+  if (id) {
+    document.querySelector("form")?.setAttribute("aria-busy", "true");
+  }
+
+  useEffect(() => {
+    function setInputValue(name: string, value: any) {
+      document
+        .querySelector(`input[name=${name.replace(/\./g, "\\.")}]`)
+        ?.setAttribute("value", value);
+    }
+
+    function setValue(name: string, value: any) {
+      const el = document.querySelector(`[name=${name.replace(/\./g, "\\.")}]`);
+
+      if (el && "value" in el) {
+        el.value = value;
+      }
+    }
+
+    if (doc) {
+      setInputValue("date.start", doc.date.start);
+      setInputValue("date.end", doc.date.end);
+      setInputValue("geo.name", doc.location.name);
+      setInputValue("geo.country", doc.location.country);
+      setInputValue("geo.place_id", doc.location.place_id);
+      setInputValue("description.title", doc.description.title);
+      setValue("description.body", doc.description.body);
+      setValue("photos.album", doc.photos.album?.id);
+
+      document.querySelector("form")?.setAttribute("aria-busy", "false");
+    }
+  }, [doc]);
 
   async function getAlbums() {
     if (!client) {
@@ -69,9 +98,6 @@ export function Updates() {
     e.preventDefault();
 
     const data = new FormData(e.target as any);
-
-    console.log("Form values:", [...data.entries()]);
-
     const albumId = data.get("photos.album") as string;
 
     writeUpdate(uuidv4(), {
@@ -99,6 +125,8 @@ export function Updates() {
         items: [],
       },
     });
+
+    setLocation("/updates");
   }
 
   if (!user) {
@@ -121,58 +149,9 @@ export function Updates() {
     setGeoValue(value);
   }
 
-  const loadPhotos =
-    (update: DocWithId<Collection.Updates>) =>
-    async (e: MouseEvent<HTMLButtonElement>) => {
-      if (!client || !update.photos.album) {
-        return;
-      }
-
-      const target = e.currentTarget;
-
-      target.setAttribute("aria-busy", "true");
-
-      try {
-        const photos = await getAllPhotos(client, update.photos.album.id);
-        if (photos) {
-          writeUpdate(update.id, {
-            photos: {
-              album: update.photos.album,
-              items: photos.map((photo) => {
-                return {
-                  id: photo.id as string,
-                  url: photo.productUrl as string,
-                  thumb_url: photo.baseUrl as string,
-                  image_url: photo.baseUrl as string,
-                  height: (photo.mediaMetadata?.height as string) || "",
-                  width: (photo.mediaMetadata?.width as string) || "",
-                  created_on:
-                    (photo.mediaMetadata?.creationTime as string) || "",
-                };
-              }),
-            },
-          });
-        }
-      } catch (error) {
-        if (
-          typeof error === "object" &&
-          error !== null &&
-          "status" in error &&
-          error.status === 401
-        ) {
-          alert("Please re-authorize...");
-          unauthorize();
-        } else {
-          throw error;
-        }
-      }
-
-      target.setAttribute("aria-busy", "false");
-    };
-
   return (
     <>
-      <h3>Updates</h3>
+      <h3>{id ? "Edit update" : "Add update"}</h3>
       <form onSubmit={addUpdate}>
         <fieldset>
           <legend>Date</legend>
@@ -247,79 +226,22 @@ export function Updates() {
                 )}
               </select>
             </label>
-            {isAuthorized ? (
-              <button type="button" onClick={getAlbums}>
-                {albums.length > 0 ? "Refresh" : "Retrieve"} list of albums
-              </button>
-            ) : authorize ? (
-              <button type="button" onClick={authorize}>
-                Authorize
-              </button>
-            ) : (
-              "Loading..."
-            )}
           </div>
         </fieldset>
-        <button type="submit">Add update</button>
+        <div className="grid">
+          <button type="submit">Add update</button>
+          <button onClick={() => setLocation("/updates")}>Cancel</button>
+          {isAuthorized ? (
+            <button type="button" onClick={getAlbums}>
+              {albums.length > 0 ? "Refresh" : "Retrieve"} list of albums
+            </button>
+          ) : authorize ? (
+            <button type="button" onClick={authorize}>
+              Authorize
+            </button>
+          ) : null}
+        </div>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Location</th>
-            <th scope="col">Title</th>
-            <th scope="col">Album</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {updates && updates.length > 0 ? (
-            updates
-              .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
-              .map((update) => (
-                <tr key={update.id}>
-                  <th scope="row">{update.date.start}</th>
-                  <td>
-                    <a
-                      href={`https://www.google.com/maps/place/?q=place_id:${update.location.place_id}`}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {update.location.name}
-                    </a>
-                  </td>
-                  <td>{update.description.title}</td>
-                  <td>
-                    <a
-                      href={update.photos.album?.url}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {update.photos.album?.name}
-                    </a>{" "}
-                    ({update.photos.items.length} photos)
-                  </td>
-                  <td>
-                    <div className="grid">
-                      <button onClick={() => deleteUpdate(update.id)}>
-                        Delete
-                      </button>
-                      <button onClick={loadPhotos(update)}>
-                        Reload photos
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-          ) : (
-            <tr>
-              <th scope="row" colSpan={5} aria-busy="true">
-                Loading...
-              </th>
-            </tr>
-          )}
-        </tbody>
-      </table>
     </>
   );
 }

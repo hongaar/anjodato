@@ -1,3 +1,4 @@
 export * from "./Labels";
 export * from "./Navigation";
-export * from "./Updates";
+export * from "./UpdatesEdit";
+export * from "./UpdatesList";

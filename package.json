@@ -13,7 +13,7 @@
   "scripts": {
     "start": "run-p \"start:**\"",
     "start:web": "yarn workspace @anjodato/web run start",
-    "start:emulator": "firebase emulators:start --only firestore,hosting",
+    "start:emulator": "firebase emulators:start --only firestore,hosting,functions",
     "build": "yarn workspaces foreach --topological --verbose run build",
     "build:watch": "yarn workspaces foreach --parallel --interlaced run build:watch",
     "format": "prettier --write --ignore-unknown .",

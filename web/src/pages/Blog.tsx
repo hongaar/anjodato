@@ -1,8 +1,7 @@
-import { format } from "date-fns";
-import { nl } from "date-fns/locale";
 import { Helmet } from "react-helmet";
 import { Link } from "wouter";
 import { Collection } from "../api";
+import { Header, Photos } from "../components/Blog";
 import { useCollectionOnce } from "../hooks";
 
 export function Blog() {
@@ -27,37 +26,16 @@ export function Blog() {
             .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
             .map((update) => (
               <article key={update.id}>
-                <header>
-                  <hgroup>
-                    <h3>
-                      {update.description.title
-                        ? update.description.title
-                        : `${update.location.name}, ${update.location.country}`}
-                    </h3>
-                    <p>
-                      {format(new Date(update.date.start), "d LLLL y", {
-                        locale: nl,
-                      })}
-                      {update.description.title
-                        ? ` — ${update.location.name}, ${update.location.country}`
-                        : null}
-                    </p>
-                  </hgroup>
-                </header>
+                <Header
+                  title={update.description.title}
+                  location={`${update.location.name}, ${update.location.country}`}
+                  dateStart={update.date.start}
+                  dateEnd={update.date.end}
+                />
                 {update.description.body ? (
                   <section>{update.description.body}</section>
                 ) : null}
-                {update.photos.items.length ? (
-                  <section>
-                    {update.photos.items.map((photo) => (
-                      <img
-                        key={photo.id}
-                        src={`${photo.image_url}=h100`}
-                        alt=""
-                      />
-                    ))}
-                  </section>
-                ) : null}
+                <Photos items={update.photos.items} />
                 {/* <Link href={`/updates/${update.id}`}>Lees verder...</Link> */}
               </article>
             ))

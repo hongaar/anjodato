@@ -57,6 +57,12 @@ article hgroup {
 
 // form
 
+form[aria-busy="true"] {
+  > * {
+    display: none;
+  }
+}
+
 fieldset {
   padding: var(--spacing);
   border: var(--border-width) solid var(--form-element-border-color);

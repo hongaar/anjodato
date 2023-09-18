@@ -20,11 +20,13 @@
     "react-firebase-hooks": "^5.1.1",
     "react-google-places-autocomplete": "4.0.1",
     "react-helmet": "6.1.0",
+    "react-photo-album": "2.3.0",
     "react-scripts": "5.0.1",
     "typescript": "^5.2.2",
     "usehooks-ts": "2.9.1",
     "web-vitals": "^3.4.0",
-    "wouter": "^2.11.0"
+    "wouter": "^2.11.0",
+    "yet-another-react-lightbox": "3.12.2"
   },
   "scripts": {
     "start": "react-scripts start",

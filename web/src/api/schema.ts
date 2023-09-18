@@ -28,8 +28,8 @@ type DocEnum = {
         url: string;
         thumb_url: string;
         image_url: string;
-        height: string;
-        width: string;
+        height: number;
+        width: number;
         created_on: string;
       }[];
     };

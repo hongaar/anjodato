@@ -1,6 +1,11 @@
 import { Helmet } from "react-helmet";
 import { Link, Route, Router } from "wouter";
-import { Labels, Navigation, Updates } from "../components/Admin";
+import {
+  Labels,
+  Navigation,
+  UpdatesEdit,
+  UpdatesList,
+} from "../components/Admin";
 import { AuthProvider } from "../context";
 
 export function Admin({ params }: { params: { workshop: string } }) {
@@ -20,12 +25,13 @@ export function Admin({ params }: { params: { workshop: string } }) {
       </header>
       <main className="container">
         <Router base="/admin">
-          <Route path="/updates" component={Updates} />
+          <Route path="/updates/:id" component={UpdatesEdit} />
+          <Route path="/updates" component={UpdatesList} />
           <Route path="/labels" component={Labels} />
         </Router>
       </main>
       <footer className="container">
-        <Link href="/">Naar het blog</Link>
+        ➡️ <Link href="/">Naar het blog</Link>
       </footer>
     </AuthProvider>
   );
