@@ -28,6 +28,14 @@
   }
 }
 
+// lightbox fixes
+.yarl__root {
+  button {
+    width: unset;
+    --box-shadow: none;
+  }
+}
+
 // elements
 
 h1,

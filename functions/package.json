@@ -13,10 +13,13 @@
     "start": "yarn shell"
   },
   "dependencies": {
+    "cors": "2.8.5",
     "firebase-admin": "^11.10.1",
-    "firebase-functions": "^4.4.1"
+    "firebase-functions": "^4.4.1",
+    "node-fetch": "3.3.2"
   },
   "devDependencies": {
+    "@types/cors": "^2",
     "@types/node": "20.6.2",
     "firebase-functions-test": "^3.1.0",
     "typescript": "5.2.2"

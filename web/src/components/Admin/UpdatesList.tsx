@@ -9,6 +9,11 @@ import {
   useDocWriter,
   useGapi,
 } from "../../hooks";
+import {
+  useListFiles,
+  useRemoveFile,
+  useUploadFile,
+} from "../../hooks/useStorage";
 
 export function UpdatesList() {
   console.debug("Rendering component Admin/UpdatesList");
@@ -19,6 +24,9 @@ export function UpdatesList() {
   const updates = useCollection(Collection.Updates);
   const writeUpdate = useDocWriter(Collection.Updates);
   const deleteUpdate = useDocDeleter(Collection.Updates);
+  const { remove } = useRemoveFile();
+  const { list } = useListFiles();
+  const { upload } = useUploadFile();
 
   if (!user) {
     return null;
@@ -37,7 +45,28 @@ export function UpdatesList() {
 
       try {
         const photos = await getAllPhotos(client, update.photos.album.id);
+
         if (photos) {
+          // Clean up directory
+          const files = await list(`images/${update.id}`);
+          await Promise.all(files.map((file) => remove(file.fullPath)));
+
+          // Iterate Google Photos album, upload each photo to Firebase Storage
+          await Promise.all(
+            photos.map(async (photo) => {
+              const photoUrl = `${photo.baseUrl!}=w3840`;
+              // Can't just fetch because of CORS
+              const photoBlob = await fetch(photoUrl).then((res) => res.blob());
+              return upload(
+                `images/${update.id}/${photo.filename}`,
+                photoBlob,
+                {
+                  contentType: photo.mimeType,
+                },
+              );
+            }),
+          );
+
           writeUpdate(update.id, {
             photos: {
               album: update.photos.album,
@@ -66,6 +95,7 @@ export function UpdatesList() {
           alert("Please re-authorize...");
           unauthorize();
         } else {
+          target.setAttribute("aria-busy", "false");
           throw error;
         }
       }

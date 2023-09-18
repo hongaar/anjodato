@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "wouter";
 import { GOOGLE_API_KEY, getAllAlbums } from "../../api";
 import { Collection } from "../../api/schema";
-import { useAuth, useDocWriter, useDocumentOnce, useGapi } from "../../hooks";
+import { useAuth, useDocWriter, useDocument, useGapi } from "../../hooks";
 
 type PlaceResult = {
   label: string;
@@ -29,7 +29,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
   const { isAuthorized, authorize, unauthorize, client } = useGapi();
-  const doc = useDocumentOnce(Collection.Updates, id || "x");
+  const doc = useDocument(Collection.Updates, id || "x");
   const writeUpdate = useDocWriter(Collection.Updates);
   const [geo, setGeoValue] = useState<PlaceResult | null>(null);
   const [albums, setAlbums] = useSessionStorage(
@@ -37,7 +37,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     [] as gapi.client.photoslibrary.Album[],
   );
 
-  if (id) {
+  if (id && !doc) {
     document.querySelector("form")?.setAttribute("aria-busy", "true");
   }
 
@@ -100,7 +100,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     const data = new FormData(e.target as any);
     const albumId = data.get("photos.album") as string;
 
-    writeUpdate(uuidv4(), {
+    writeUpdate(id || uuidv4(), {
       date: {
         start: data.get("date.start") as string,
         end: data.get("date.end") as string,
@@ -229,7 +229,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
           </div>
         </fieldset>
         <div className="grid">
-          <button type="submit">Add update</button>
+          <button type="submit">{id ? "Edit update" : "Add update"}</button>
           <button onClick={() => setLocation("/updates")}>Cancel</button>
           {isAuthorized ? (
             <button type="button" onClick={getAlbums}>
