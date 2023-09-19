@@ -13,10 +13,6 @@ type Return = {
   publicUrl: string;
 };
 
-try {
-  initializeApp();
-} catch (error) {}
-
 const fetch = (...args: Parameters<typeof fetchType>) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -43,6 +39,10 @@ export const getPhoto = onCall<Params, Promise<Return>>(
     }
 
     logger.info("Got cors proxy request for url:", data.url);
+
+    try {
+      initializeApp();
+    } catch (error) {}
 
     try {
       const file = storage().bucket().file(data.path);
