@@ -11,7 +11,7 @@ import { useMemo } from "react";
 import { useUploadFile as useBaseUploadFile } from "react-firebase-hooks/storage";
 import { useFirebase } from "./useFirebase";
 
-const USE_EMULATOR = true;
+const USE_EMULATOR = false;
 
 function useStorage() {
   const firebase = useFirebase();

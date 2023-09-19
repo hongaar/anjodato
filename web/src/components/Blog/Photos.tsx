@@ -11,7 +11,36 @@ type Props = {
   }[];
 };
 
-const breakpoints = [3840, 2400, 1080, 640, 384, 256];
+const sizes = [3840, 2400, 1080, 640, 384, 256];
+
+const EXTENSION = "jpeg";
+
+function getDimension(size: number, width: number, height: number) {
+  if (width > height) {
+    return {
+      width: size,
+      height: Math.round((height / width) * size),
+    };
+  } else {
+    return {
+      width: Math.round((width / height) * size),
+      height: size,
+    };
+  }
+}
+
+function getUrl(url: string, size: number) {
+  const parsed = new URL(url);
+  const pathname = parsed.pathname;
+
+  // strip extension from pathname
+  const extension = pathname.split(".").pop();
+  const basename = pathname.replace(`.${extension}`, "");
+
+  parsed.pathname = `${basename}_${size}x${size}.${EXTENSION}`;
+
+  return parsed.toString();
+}
 
 export function Photos({ items }: Props) {
   const [index, setIndex] = useState(-1);
@@ -21,18 +50,18 @@ export function Photos({ items }: Props) {
   }
 
   const photos = items.map((photo) => {
-    const width = breakpoints[0];
-    const height = (photo.height / photo.width) * width;
+    const { width, height } = getDimension(sizes[0], photo.width, photo.height);
 
     return {
-      src: `${photo.url}=w${width}`,
+      src: getUrl(photo.url, width),
       width,
       height,
-      srcSet: breakpoints.map((breakpoint) => {
-        const height = Math.round((photo.height / photo.width) * breakpoint);
+      srcSet: sizes.map((size) => {
+        const { width, height } = getDimension(size, photo.width, photo.height);
+
         return {
-          src: `${photo.url}=w${breakpoint}`,
-          width: breakpoint,
+          src: getUrl(photo.url, size),
+          width,
           height,
         };
       }),

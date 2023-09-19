@@ -1,7 +1,9 @@
 import type { CallableFunction, getPhoto } from "@anjodato/functions";
 
 export enum Collection {
+  Labels = "labels",
   Updates = "updates",
+  Comments = "comments",
 }
 
 export enum Functions {
@@ -27,6 +29,9 @@ export type FunctionReturn<Function> = Function extends CallableFunction<
   : never;
 
 type DocEnum = {
+  [Collection.Labels]: {
+    name: string;
+  };
   [Collection.Updates]: {
     date: {
       start: string;
@@ -57,6 +62,11 @@ type DocEnum = {
         created_on: string;
       }[];
     };
+  };
+  [Collection.Comments]: {
+    date: string;
+    name: string;
+    comment: string;
   };
 };
 

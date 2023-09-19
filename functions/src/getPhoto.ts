@@ -1,23 +1,21 @@
+import { initializeApp, storage } from "firebase-admin";
 import { logger } from "firebase-functions/v2";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 // @ts-ignore
 import type fetchType from "node-fetch";
-// @ts-ignore
-import type { Response } from "node-fetch";
 
 type Params = {
   url: string;
+  path: string;
 };
 
 type Return = {
-  body: string;
+  publicUrl: string;
 };
 
-const responseToDataUrl = async (response: Response) => {
-  const contentType = response.headers.get("Content-Type");
-  const base64 = Buffer.from(await response.arrayBuffer()).toString("base64");
-  return "data:" + contentType + ";base64," + base64;
-};
+try {
+  initializeApp();
+} catch (error) {}
 
 const fetch = (...args: Parameters<typeof fetchType>) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
@@ -40,14 +38,34 @@ export const getPhoto = onCall<Params, Promise<Return>>(
       throw new HttpsError("invalid-argument", "URL not specified.");
     }
 
+    if (!data.path) {
+      throw new HttpsError("invalid-argument", "Path not specified.");
+    }
+
     logger.info("Got cors proxy request for url:", data.url);
 
     try {
-      const response = await fetch(decodeURI(String(data.url)));
-      const body = await responseToDataUrl(response);
+      const file = storage().bucket().file(data.path);
+
+      await fetch(data.url).then((res) => {
+        if (res.body === null) {
+          throw new Error("Response body is empty");
+        }
+
+        logger.info("Got photo response");
+
+        return new Promise<void>((resolve, reject) => {
+          const dest = file.createWriteStream();
+          res.body!.pipe(dest);
+          res.body!.on("end", resolve);
+          dest.on("error", reject);
+        });
+      });
+
+      logger.info("Saved photo");
 
       return {
-        body,
+        publicUrl: file.publicUrl(),
       };
     } catch (error) {
       logger.error(error);

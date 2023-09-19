@@ -10,12 +10,7 @@ import {
   useGapi,
 } from "../../hooks";
 import { useFunction } from "../../hooks/useFunction";
-import {
-  useGetDownloadUrl,
-  useListFiles,
-  useRemoveFile,
-  useUploadFile,
-} from "../../hooks/useStorage";
+import { useListFiles, useRemoveFile } from "../../hooks/useStorage";
 
 export function UpdatesList() {
   console.debug("Rendering component Admin/UpdatesList");
@@ -28,12 +23,20 @@ export function UpdatesList() {
   const deleteUpdate = useDocDeleter(Collection.Updates);
   const { remove } = useRemoveFile();
   const { list } = useListFiles();
-  const { upload } = useUploadFile();
-  const { getUrl } = useGetDownloadUrl();
   const [getPhoto] = useFunction(Functions.GetPhoto);
 
   if (!user) {
     return null;
+  }
+
+  async function removePhotosForUpdate(id: string) {
+    const files = await progress(
+      list(`images/${id}`),
+      "Get list of current photos for update...",
+    );
+    for (const file of files) {
+      await progress(remove(file.fullPath), `Remove ${file.name}...`);
+    }
   }
 
   const loadPhotos =
@@ -54,53 +57,31 @@ export function UpdatesList() {
         );
 
         if (photos) {
-          // Clean up directory
-          const files = await progress(
-            list(`images/${update.id}`),
-            "Get list of current photos for update...",
-          );
-          for (const file of files) {
-            await progress(remove(file.fullPath), `Remove ${file.name}...`);
-          }
+          await removePhotosForUpdate(update.id);
 
           const photoList = [];
 
           // Iterate Google Photos album, upload each photo to Firebase Storage
           for (const photo of photos) {
             const url = `${photo.baseUrl!}=w3840`;
-
-            // Can't just fetch because of CORS
+            const path = `images/${update.id}/${photo.filename}`;
             const result = await progress(
-              getPhoto({ url }),
+              getPhoto({ url, path }),
               `Download photo ${photo.filename}...`,
             );
-            const photoBody = result?.data.body;
 
-            if (photoBody) {
-              const blob = await fetch(photoBody).then((res) => res.blob());
-              const path = `images/${update.id}/${photo.filename}`;
-              const uploadedPhoto = await progress(
-                upload(path, blob, {
-                  contentType: blob.type,
-                }),
-                `Upload photo ${photo.filename}...`,
-              );
-
-              if (uploadedPhoto) {
-                const url = await getUrl(path);
-                photoList.push({
-                  path: uploadedPhoto.metadata.fullPath,
-                  url,
-                  source_id: photo.id || "",
-                  source_url: photo.productUrl || "",
-                  height: parseInt(photo.mediaMetadata?.height as string, 10),
-                  width: parseInt(photo.mediaMetadata?.width as string, 10),
-                  created_on:
-                    (photo.mediaMetadata?.creationTime as string) || "",
-                });
-              } else {
-                throw new Error("Failed to upload photo");
-              }
+            if (result?.data.publicUrl) {
+              photoList.push({
+                path,
+                url: result.data.publicUrl,
+                source_id: photo.id || "",
+                source_url: photo.productUrl || "",
+                height: parseInt(photo.mediaMetadata?.height as string, 10),
+                width: parseInt(photo.mediaMetadata?.width as string, 10),
+                created_on: (photo.mediaMetadata?.creationTime as string) || "",
+              });
+            } else {
+              throw new Error("Failed to upload photo");
             }
           }
 
@@ -180,13 +161,14 @@ export function UpdatesList() {
                         Edit
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={async () => {
                           if (
                             prompt(
                               'If you really want to delete this blog, type "yes"',
                               "no",
                             ) === "yes"
                           ) {
+                            await removePhotosForUpdate(update.id);
                             deleteUpdate(update.id);
                           }
                         }}

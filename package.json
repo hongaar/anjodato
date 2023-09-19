@@ -14,7 +14,7 @@
     "start": "run-p \"start:**\"",
     "start:web": "yarn workspace @anjodato/web run start",
     "start:functions": "yarn workspace @anjodato/functions run build:watch",
-    "start:emulator": "firebase emulators:start --only firestore,hosting,functions,storage",
+    "start:emulator": "firebase emulators:start --only hosting,functions",
     "build": "yarn workspaces foreach --topological --verbose run build",
     "build:watch": "yarn workspaces foreach --parallel --interlaced run build:watch",
     "format": "prettier --write --ignore-unknown .",
