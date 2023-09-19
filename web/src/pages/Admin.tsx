@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { Toaster } from "react-hot-toast";
 import { Link, Route, Router } from "wouter";
 import {
   Labels,
@@ -16,6 +17,7 @@ export function Admin({ params }: { params: { workshop: string } }) {
       <Helmet>
         <title>Admin</title>
       </Helmet>
+      <Toaster />
       <header className="container">
         <hgroup>
           <h1>AnJoDaTo</h1>

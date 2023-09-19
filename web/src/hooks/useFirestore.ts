@@ -22,9 +22,7 @@ import { useFirebase } from "./useFirebase";
 
 const USE_EMULATOR = false;
 
-export function useFirestore() {
-  console.debug("Called useFirestore");
-
+function useFirestore() {
   const firebase = useFirebase();
   const firestore = useMemo(() => {
     const db = getFirestore(firebase.app);

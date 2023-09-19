@@ -2,6 +2,7 @@ import {
   UploadMetadata,
   connectStorageEmulator,
   deleteObject,
+  getDownloadURL,
   getStorage,
   listAll,
   ref,
@@ -12,9 +13,7 @@ import { useFirebase } from "./useFirebase";
 
 const USE_EMULATOR = true;
 
-export function useStorage() {
-  console.debug("Called useStorage");
-
+function useStorage() {
   const firebase = useFirebase();
   const storage = useMemo(() => {
     const storage = getStorage(firebase.app);
@@ -35,6 +34,19 @@ export function useStorageRef(file: string) {
   const storage = useStorage();
 
   return useMemo(() => ref(storage, file), [storage, file]);
+}
+
+export function useGetDownloadUrl() {
+  const storage = useStorage();
+
+  const getUrl = async (file: string) => {
+    const fileRef = ref(storage, file);
+    const result = await getDownloadURL(fileRef);
+
+    return result;
+  };
+
+  return { getUrl };
 }
 
 export function useUploadFile() {

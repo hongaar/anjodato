@@ -5,8 +5,7 @@ import "yet-another-react-lightbox/styles.css";
 
 type Props = {
   items: {
-    id: string;
-    image_url: string;
+    url: string;
     width: number;
     height: number;
   }[];
@@ -26,13 +25,13 @@ export function Photos({ items }: Props) {
     const height = (photo.height / photo.width) * width;
 
     return {
-      src: `${photo.image_url}=w${width}`,
+      src: `${photo.url}=w${width}`,
       width,
       height,
       srcSet: breakpoints.map((breakpoint) => {
         const height = Math.round((photo.height / photo.width) * breakpoint);
         return {
-          src: `${photo.image_url}=w${breakpoint}`,
+          src: `${photo.url}=w${breakpoint}`,
           width: breakpoint,
           height,
         };

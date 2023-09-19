@@ -1,74 +1,40 @@
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { useMemo } from "react";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
+import {
+  FunctionParams,
+  FunctionReturn,
+  FunctionTypes,
+  Functions,
+} from "../api";
 import { useFirebase } from "./useFirebase";
 
 const USE_EMULATOR = true;
 
-export function useStorage() {
-  console.debug("Called useStorage");
-
+function useFunctions() {
   const firebase = useFirebase();
-  const storage = useMemo(() => {
-    const storage = getStorage(firebase.app);
+  const functions = useMemo(() => {
+    const functions = getFunctions(firebase.app, "europe-west1");
 
     if (USE_EMULATOR && process.env.NODE_ENV === "development") {
       try {
-        connectStorageEmulator(storage, "localhost", 9199);
+        connectFunctionsEmulator(functions, "localhost", 5001);
       } catch {}
     }
 
-    return storage;
+    return functions;
   }, [firebase]);
 
-  return storage;
+  return functions;
 }
 
-export function useStorageRef(file: string) {
-  const storage = useStorage();
+export function useFunction(fn: Functions) {
+  const functions = useFunctions();
 
-  return useMemo(() => ref(storage, file), [storage, file]);
-}
+  const [executeCallable, loading, error] = useHttpsCallable<
+    FunctionParams<FunctionTypes[typeof fn]>,
+    FunctionReturn<FunctionTypes[typeof fn]>
+  >(functions, fn);
 
-export function useUploadFile() {
-  const [uploadFile, uploading, snapshot, error] = useBaseUploadFile();
-  const storage = useStorage();
-
-  const upload = async (
-    file: string,
-    data: Blob | Uint8Array | ArrayBuffer,
-    metadata?: UploadMetadata,
-  ) => {
-    const fileRef = ref(storage, file);
-    const result = await uploadFile(fileRef, data, metadata);
-
-    return result;
-  };
-
-  return { upload, uploading, snapshot, error };
-}
-
-export function useRemoveFile() {
-  const storage = useStorage();
-
-  const remove = async (file: string) => {
-    const fileRef = ref(storage, file);
-
-    await deleteObject(fileRef);
-  };
-
-  return { remove };
-}
-
-export function useListFiles() {
-  const storage = useStorage();
-
-  const list = async (path: string) => {
-    const pathRef = ref(storage, path);
-    const result = await listAll(pathRef);
-
-    return result.items;
-  };
-
-  return { list };
+  return [executeCallable, loading, error] as const;
 }

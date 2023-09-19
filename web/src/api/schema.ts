@@ -1,6 +1,30 @@
+import type { CallableFunction, getPhoto } from "@anjodato/functions";
+
 export enum Collection {
   Updates = "updates",
 }
+
+export enum Functions {
+  GetPhoto = "getPhoto",
+}
+
+export type FunctionTypes = {
+  [Functions.GetPhoto]: typeof getPhoto;
+};
+
+export type FunctionParams<Function> = Function extends CallableFunction<
+  infer Params,
+  unknown
+>
+  ? Params
+  : never;
+
+export type FunctionReturn<Function> = Function extends CallableFunction<
+  unknown,
+  infer Return
+>
+  ? Awaited<Return>
+  : never;
 
 type DocEnum = {
   [Collection.Updates]: {
@@ -24,10 +48,10 @@ type DocEnum = {
         name: string;
       } | null;
       items: {
-        id: string;
+        path: string;
         url: string;
-        thumb_url: string;
-        image_url: string;
+        source_id: string;
+        source_url: string;
         height: number;
         width: number;
         created_on: string;

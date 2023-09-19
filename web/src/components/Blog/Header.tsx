@@ -17,7 +17,7 @@ export function Header({ title, location, dateStart, dateEnd }: Props) {
           {format(new Date(dateStart), "d LLLL y", {
             locale: nl,
           })}
-          {title ? ` — ${location}}` : null}
+          {title ? ` — ${location}` : null}
         </p>
       </hgroup>
     </header>

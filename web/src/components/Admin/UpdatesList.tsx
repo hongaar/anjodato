@@ -1,7 +1,7 @@
 import { MouseEvent } from "react";
 import { useLocation } from "wouter";
-import { getAllPhotos } from "../../api";
-import { Collection, DocWithId } from "../../api/schema";
+import { getAllPhotos, progress } from "../../api";
+import { Collection, DocWithId, Functions } from "../../api/schema";
 import {
   useAuth,
   useCollection,
@@ -9,7 +9,9 @@ import {
   useDocWriter,
   useGapi,
 } from "../../hooks";
+import { useFunction } from "../../hooks/useFunction";
 import {
+  useGetDownloadUrl,
   useListFiles,
   useRemoveFile,
   useUploadFile,
@@ -27,6 +29,8 @@ export function UpdatesList() {
   const { remove } = useRemoveFile();
   const { list } = useListFiles();
   const { upload } = useUploadFile();
+  const { getUrl } = useGetDownloadUrl();
+  const [getPhoto] = useFunction(Functions.GetPhoto);
 
   if (!user) {
     return null;
@@ -44,46 +48,71 @@ export function UpdatesList() {
       target.setAttribute("aria-busy", "true");
 
       try {
-        const photos = await getAllPhotos(client, update.photos.album.id);
+        const photos = await progress(
+          getAllPhotos(client, update.photos.album.id),
+          "Get album details from Google Photos...",
+        );
 
         if (photos) {
           // Clean up directory
-          const files = await list(`images/${update.id}`);
-          await Promise.all(files.map((file) => remove(file.fullPath)));
+          const files = await progress(
+            list(`images/${update.id}`),
+            "Get list of current photos for update...",
+          );
+          for (const file of files) {
+            await progress(remove(file.fullPath), `Remove ${file.name}...`);
+          }
+
+          const photoList = [];
 
           // Iterate Google Photos album, upload each photo to Firebase Storage
-          await Promise.all(
-            photos.map(async (photo) => {
-              const photoUrl = `${photo.baseUrl!}=w3840`;
-              // Can't just fetch because of CORS
-              const photoBlob = await fetch(photoUrl).then((res) => res.blob());
-              return upload(
-                `images/${update.id}/${photo.filename}`,
-                photoBlob,
-                {
-                  contentType: photo.mimeType,
-                },
-              );
-            }),
-          );
+          for (const photo of photos) {
+            const url = `${photo.baseUrl!}=w3840`;
 
-          writeUpdate(update.id, {
-            photos: {
-              album: update.photos.album,
-              items: photos.map((photo) => {
-                return {
-                  id: photo.id as string,
-                  url: photo.productUrl as string,
-                  thumb_url: photo.baseUrl as string,
-                  image_url: photo.baseUrl as string,
+            // Can't just fetch because of CORS
+            const result = await progress(
+              getPhoto({ url }),
+              `Download photo ${photo.filename}...`,
+            );
+            const photoBody = result?.data.body;
+
+            if (photoBody) {
+              const blob = await fetch(photoBody).then((res) => res.blob());
+              const path = `images/${update.id}/${photo.filename}`;
+              const uploadedPhoto = await progress(
+                upload(path, blob, {
+                  contentType: blob.type,
+                }),
+                `Upload photo ${photo.filename}...`,
+              );
+
+              if (uploadedPhoto) {
+                const url = await getUrl(path);
+                photoList.push({
+                  path: uploadedPhoto.metadata.fullPath,
+                  url,
+                  source_id: photo.id || "",
+                  source_url: photo.productUrl || "",
                   height: parseInt(photo.mediaMetadata?.height as string, 10),
                   width: parseInt(photo.mediaMetadata?.width as string, 10),
                   created_on:
                     (photo.mediaMetadata?.creationTime as string) || "",
-                };
-              }),
-            },
-          });
+                });
+              } else {
+                throw new Error("Failed to upload photo");
+              }
+            }
+          }
+
+          await progress(
+            writeUpdate(update.id, {
+              photos: {
+                album: update.photos.album,
+                items: photoList,
+              },
+            }),
+            `Writing list of photos...`,
+          );
         }
       } catch (error) {
         if (

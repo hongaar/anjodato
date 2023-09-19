@@ -1,3 +1,5 @@
+import { toast } from "react-hot-toast";
+
 export function sluggify(str: string) {
   str = str.replace(/^\s+|\s+$/g, ""); // trim
   str = str.toLowerCase();
@@ -15,4 +17,13 @@ export function sluggify(str: string) {
     .replace(/-+/g, "-"); // collapse dashes
 
   return str;
+}
+
+export function progress<T>(promise: Promise<T>, msg: string) {
+  // toast.dismiss();
+  return toast.promise(promise, {
+    loading: msg,
+    success: msg,
+    error: msg,
+  });
 }
