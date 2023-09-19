@@ -76,7 +76,7 @@ export function useRemoveFile() {
     await deleteObject(fileRef);
   };
 
-  return { remove };
+  return remove;
 }
 
 export function useListFiles() {
@@ -89,5 +89,5 @@ export function useListFiles() {
     return result.items;
   };
 
-  return { list };
+  return list;
 }

@@ -21,9 +21,9 @@ export function UpdatesList() {
   const updates = useCollection(Collection.Updates);
   const writeUpdate = useDocWriter(Collection.Updates);
   const deleteUpdate = useDocDeleter(Collection.Updates);
-  const { remove } = useRemoveFile();
-  const { list } = useListFiles();
-  const [getPhoto] = useFunction(Functions.GetPhoto);
+  const remove = useRemoveFile();
+  const list = useListFiles();
+  const getPhoto = useFunction(Functions.GetPhoto);
 
   if (!user) {
     return null;

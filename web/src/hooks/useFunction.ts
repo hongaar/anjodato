@@ -31,10 +31,20 @@ function useFunctions() {
 export function useFunction(fn: Functions) {
   const functions = useFunctions();
 
-  const [executeCallable, loading, error] = useHttpsCallable<
+  const [executeCallable, , error] = useHttpsCallable<
     FunctionParams<FunctionTypes[typeof fn]>,
     FunctionReturn<FunctionTypes[typeof fn]>
   >(functions, fn);
 
-  return [executeCallable, loading, error] as const;
+  async function run(data?: FunctionParams<FunctionTypes[typeof fn]>) {
+    const result = await executeCallable(data);
+
+    if (error) {
+      throw error;
+    }
+
+    return result;
+  }
+
+  return run;
 }

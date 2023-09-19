@@ -1,4 +1,9 @@
-import { initializeApp, storage } from "firebase-admin";
+import admin from "firebase-admin";
+
+try {
+  admin.initializeApp();
+} catch (error) {}
+
 import { logger } from "firebase-functions/v2";
 import { HttpsError, onCall } from "firebase-functions/v2/https";
 // @ts-ignore
@@ -41,11 +46,7 @@ export const getPhoto = onCall<Params, Promise<Return>>(
     logger.info("Got cors proxy request for url:", data.url);
 
     try {
-      initializeApp();
-    } catch (error) {}
-
-    try {
-      const file = storage().bucket().file(data.path);
+      const file = admin.storage().bucket().file(data.path);
 
       await fetch(data.url).then((res) => {
         if (res.body === null) {
