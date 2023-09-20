@@ -119,7 +119,7 @@ export function UpdatesList() {
       <table>
         <thead>
           <tr>
-            <th scope="col">Blog</th>
+            <th scope="col">Title</th>
             <th scope="col">Album</th>
             <th scope="col">Actions</th>
           </tr>

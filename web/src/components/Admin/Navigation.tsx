@@ -14,7 +14,10 @@ export function Navigation() {
       <ul>
         <li>
           <Link href="/admin/updates">Updates</Link>
-        </li>{" "}
+        </li>
+        <li>
+          <Link href="/admin/comments">Comments</Link>
+        </li>
         <li>
           <Link href="/admin/labels">Labels</Link>
         </li>
