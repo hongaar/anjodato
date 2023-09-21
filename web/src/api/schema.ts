@@ -1,17 +1,23 @@
-import type { CallableFunction, getPhoto } from "@anjodato/functions";
+import type {
+  CallableFunction,
+  cleanPhotos,
+  downloadPhoto,
+} from "@anjodato/functions";
+import { CollectionReference, DocumentReference } from "firebase/firestore";
 
 export enum Collection {
-  Labels = "labels",
   Updates = "updates",
   Comments = "comments",
 }
 
 export enum Functions {
-  GetPhoto = "getPhoto",
+  CleanPhotos = "cleanPhotos",
+  DownloadPhoto = "downloadPhoto",
 }
 
 export type FunctionTypes = {
-  [Functions.GetPhoto]: typeof getPhoto;
+  [Functions.CleanPhotos]: typeof cleanPhotos;
+  [Functions.DownloadPhoto]: typeof downloadPhoto;
 };
 
 export type FunctionParams<Function> = Function extends CallableFunction<
@@ -28,46 +34,48 @@ export type FunctionReturn<Function> = Function extends CallableFunction<
   ? Awaited<Return>
   : never;
 
-type DocEnum = {
-  [Collection.Labels]: {
-    name: string;
+export type Update = {
+  date: {
+    start: Date;
+    end: Date | null;
   };
-  [Collection.Updates]: {
-    date: {
-      start: string;
-      end: string | null;
-    };
-    location: {
+  location: {
+    name: string;
+    country: string;
+    place_id: string;
+  };
+  description: {
+    title: string | null;
+    body: string | null;
+  };
+  photos: {
+    album: {
+      id: string;
+      url: string;
       name: string;
-      country: string;
-      place_id: string;
-    };
-    description: {
-      title: string | null;
-      body: string | null;
-    };
-    photos: {
-      album: {
-        id: string;
-        url: string;
-        name: string;
-      } | null;
-      items: {
-        path: string;
-        url: string;
-        source_id: string;
-        source_url: string;
-        height: number;
-        width: number;
-        created_on: string;
-      }[];
-    };
+    } | null;
+    items: {
+      path: string;
+      url: string;
+      source_id: string;
+      source_url: string;
+      height: number;
+      width: number;
+      created_on: string;
+    }[];
   };
-  [Collection.Comments]: {
-    date: string;
-    name: string;
-    comment: string;
-  };
+  comments: CollectionReference<Comment>;
+};
+
+export type Comment = {
+  date: Date;
+  name: string;
+  comment: string;
+};
+
+type DocEnum = {
+  [Collection.Updates]: Update;
+  [Collection.Comments]: Comment;
 };
 
 export type Doc<T extends Collection> = DocEnum[T];
@@ -75,3 +83,5 @@ export type Doc<T extends Collection> = DocEnum[T];
 export type DocWithId<T extends Collection> = AddId<DocEnum[T]>;
 
 export type AddId<T> = { id: string } & T;
+
+export type AddIdAndRef<T> = { id: string; _ref: DocumentReference<T> } & T;

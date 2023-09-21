@@ -1,6 +1,6 @@
 import { MouseEvent } from "react";
 import { useLocation } from "wouter";
-import { getAllPhotos, progress } from "../../api";
+import { formatIso, getAllPhotos, progress } from "../../api";
 import { Collection, DocWithId, Functions } from "../../api/schema";
 import {
   useAuth,
@@ -10,7 +10,6 @@ import {
   useGapi,
 } from "../../hooks";
 import { useFunction } from "../../hooks/useFunction";
-import { useListFiles, useRemoveFile } from "../../hooks/useStorage";
 
 export function UpdatesList() {
   console.debug("Rendering component Admin/UpdatesList");
@@ -21,22 +20,18 @@ export function UpdatesList() {
   const updates = useCollection(Collection.Updates);
   const writeUpdate = useDocWriter(Collection.Updates);
   const deleteUpdate = useDocDeleter(Collection.Updates);
-  const remove = useRemoveFile();
-  const list = useListFiles();
-  const getPhoto = useFunction(Functions.GetPhoto);
+  const cleanPhotos = useFunction(Functions.CleanPhotos);
+  const downloadPhoto = useFunction(Functions.DownloadPhoto);
 
   if (!user) {
     return null;
   }
 
   async function removePhotosForUpdate(id: string) {
-    const files = await progress(
-      list(`images/${id}`),
-      "Get list of current photos for update...",
+    await progress(
+      cleanPhotos({ updateId: id }),
+      "Cleaning existing photos...",
     );
-    for (const file of files) {
-      await progress(remove(file.fullPath), `Remove ${file.name}...`);
-    }
   }
 
   const loadPhotos =
@@ -66,7 +61,7 @@ export function UpdatesList() {
             const url = `${photo.baseUrl!}=w3840`;
             const path = `images/${update.id}/${photo.filename}`;
             const result = await progress(
-              getPhoto({ url, path }),
+              downloadPhoto({ url, path }),
               `Download photo ${photo.filename}...`,
             );
 
@@ -131,7 +126,7 @@ export function UpdatesList() {
               .map((update) => (
                 <tr key={update.id}>
                   <th scope="row">
-                    {update.date.start}
+                    {formatIso(update.date.start)}
                     <br />
                     <a
                       href={`https://www.google.com/maps/place/?q=place_id:${update.location.place_id}`}

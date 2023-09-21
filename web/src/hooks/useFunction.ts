@@ -28,7 +28,7 @@ function useFunctions() {
   return functions;
 }
 
-export function useFunction(fn: Functions) {
+export function useFunction<F extends Functions>(fn: F) {
   const functions = useFunctions();
 
   const [executeCallable, , error] = useHttpsCallable<
@@ -36,7 +36,7 @@ export function useFunction(fn: Functions) {
     FunctionReturn<FunctionTypes[typeof fn]>
   >(functions, fn);
 
-  async function run(data?: FunctionParams<FunctionTypes[typeof fn]>) {
+  async function run(data?: FunctionParams<FunctionTypes[F]>) {
     const result = await executeCallable(data);
 
     if (error) {

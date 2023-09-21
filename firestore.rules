@@ -6,5 +6,12 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null && request.auth.token.email == "hongaar@gmail.com";
     }
+
+    match /updates/{update} {
+        match /comments/{comment} {
+          allow create: if true;
+          allow delete: if (resource.data.date.toMillis() + 3600000 > request.time.toMillis());
+        }
+    }
   }
 }

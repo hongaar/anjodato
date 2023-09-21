@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ErrorBoundary fallback={<h1>Oops, there was an error</h1>}>
+    <ErrorBoundary fallback={<h1>Er gaat iets fout 😨</h1>}>
       <FirebaseProvider>
         <App />
       </FirebaseProvider>

@@ -1,23 +1,39 @@
-import { format } from "date-fns";
-import { nl } from "date-fns/locale";
+import { dateFormat, daterangeFormat } from "../../api";
 
 type Props = {
   title?: string | null;
-  location: string;
-  dateStart: string;
-  dateEnd?: string | null;
+  locationName: string;
+  locationCountry: string;
+  placeId: string;
+  dateStart: Date;
+  dateEnd?: Date | null;
 };
 
-export function Header({ title, location, dateStart, dateEnd }: Props) {
+export function Header({
+  title,
+  locationName,
+  locationCountry,
+  placeId,
+  dateStart,
+  dateEnd,
+}: Props) {
   return (
     <header>
       <hgroup>
-        <h3>{title ? title : location}</h3>
+        <h2>{title ? title : locationName}</h2>
         <p>
-          {format(new Date(dateStart), "d LLLL y", {
-            locale: nl,
-          })}
-          {title ? ` — ${location}` : null}
+          📍{" "}
+          <a
+            href={`https://www.google.com/maps/place/?q=place_id:${placeId}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            {title ? `${locationName}, ${locationCountry}` : locationCountry}
+          </a>{" "}
+          &nbsp; 📅{" "}
+          {dateEnd
+            ? daterangeFormat(dateStart, dateEnd)
+            : dateFormat(dateStart)}
         </p>
       </hgroup>
     </header>

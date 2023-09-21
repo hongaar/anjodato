@@ -19,9 +19,6 @@ export function Navigation() {
           <Link href="/admin/comments">Comments</Link>
         </li>
         <li>
-          <Link href="/admin/labels">Labels</Link>
-        </li>
-        <li>
           {user ? (
             <button onClick={logout}>Logout</button>
           ) : (

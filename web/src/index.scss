@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Lora&family=Mooli&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&family=Work+Sans:wght@400;600&display=swap");
 
 :root {
-  font-family: "Mooli", sans-serif;
+  font-family: "Work Sans", sans-serif;
 }
 
 // overrides
@@ -28,7 +28,8 @@
   }
 }
 
-// lightbox fixes
+// lightbox fix
+
 .yarl__root {
   button {
     width: unset;
@@ -43,6 +44,28 @@ h2,
 h3 {
   font-family: "Lora", serif;
   font-weight: normal;
+}
+
+hr {
+  margin: calc(var(--spacing) * 1.5) 0;
+}
+
+b,
+strong {
+  font-weight: 600;
+}
+
+button.link {
+  --color: var(--primary-hover);
+  --background-color: transparent;
+
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: unset;
+  color: var(--color);
+  outline: 0;
+  background-color: var(--background-color);
 }
 
 // layout
@@ -63,6 +86,41 @@ article hgroup {
   }
 }
 
+article footer {
+  ol {
+    list-style: none;
+    padding: 0;
+
+    li {
+      margin-bottom: calc(var(--typography-spacing-vertical) * 1);
+    }
+
+    small {
+      --color: var(--muted-color);
+      color: var(--color);
+    }
+  }
+
+  form {
+    position: sticky;
+    top: calc(var(--typography-spacing-vertical) * 1);
+  }
+}
+
+// table
+
+table {
+  td button:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 992px) {
+    td button {
+      margin-bottom: 0;
+    }
+  }
+}
+
 // form
 
 form[aria-busy="true"] {
@@ -78,4 +136,33 @@ fieldset {
 
 legend {
   padding: 0 calc(var(--spacing) * 0.5);
+}
+
+button[type="submit"] {
+  --background-color: var(--form-element-valid-active-border-color);
+  --border-color: var(--form-element-valid-active-border-color);
+  --color: var(--secondary-inverse);
+  cursor: pointer;
+
+  &:is([aria-current], :hover, :active, :focus) {
+    --background-color: var(--secondary-hover);
+    --border-color: var(--secondary-hover);
+  }
+
+  &:focus {
+    --box-shadow: var(--button-hover-box-shadow, 0 0 0 rgba(0, 0, 0, 0)),
+      0 0 0 var(--outline-width) var(--secondary-focus);
+  }
+}
+
+// utilities
+
+.visually-hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }

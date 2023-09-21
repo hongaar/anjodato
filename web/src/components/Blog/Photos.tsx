@@ -53,6 +53,7 @@ export function Photos({ items }: Props) {
     const { width, height } = getDimension(sizes[0], photo.width, photo.height);
 
     return {
+      key: photo.url,
       src: getUrl(photo.url, width),
       width,
       height,

@@ -22,6 +22,7 @@
     "react-google-places-autocomplete": "4.0.1",
     "react-helmet": "6.1.0",
     "react-hot-toast": "2.4.1",
+    "react-nl2br": "1.0.4",
     "react-photo-album": "2.3.0",
     "react-scripts": "5.0.1",
     "typescript": "^5.2.2",

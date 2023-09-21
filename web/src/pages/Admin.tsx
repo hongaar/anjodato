@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet";
 import { Toaster } from "react-hot-toast";
 import { Link, Route, Router } from "wouter";
 import {
-  Labels,
+  Comments,
   Navigation,
   UpdatesEdit,
   UpdatesList,
@@ -21,7 +21,7 @@ export function Admin({ params }: { params: { workshop: string } }) {
       <header className="container">
         <hgroup>
           <h1>AnJoDaTo</h1>
-          <h2>Admin</h2>
+          <p>Admin</p>
         </hgroup>
         <Navigation />
       </header>
@@ -29,7 +29,7 @@ export function Admin({ params }: { params: { workshop: string } }) {
         <Router base="/admin">
           <Route path="/updates/:id" component={UpdatesEdit} />
           <Route path="/updates" component={UpdatesList} />
-          <Route path="/labels" component={Labels} />
+          <Route path="/comments" component={Comments} />
         </Router>
       </main>
       <footer className="container">

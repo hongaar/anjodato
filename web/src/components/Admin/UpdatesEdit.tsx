@@ -3,7 +3,7 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useSessionStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "wouter";
-import { GOOGLE_API_KEY, getAllAlbums } from "../../api";
+import { GOOGLE_API_KEY, formatIso, getAllAlbums } from "../../api";
 import { Collection } from "../../api/schema";
 import { useAuth, useDocWriter, useDocument, useGapi } from "../../hooks";
 
@@ -57,8 +57,8 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     }
 
     if (doc) {
-      setInputValue("date.start", doc.date.start);
-      setInputValue("date.end", doc.date.end);
+      setInputValue("date.start", formatIso(doc.date.start));
+      setInputValue("date.end", doc.date.end ? formatIso(doc.date.end) : null);
       setInputValue("geo.name", doc.location.name);
       setInputValue("geo.country", doc.location.country);
       setInputValue("geo.place_id", doc.location.place_id);
@@ -102,8 +102,10 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
 
     writeUpdate(id || uuidv4(), {
       date: {
-        start: data.get("date.start") as string,
-        end: data.get("date.end") as string,
+        start: new Date(data.get("date.start") as string),
+        end: data.get("date.end")
+          ? new Date(data.get("date.end") as string)
+          : null,
       },
       location: {
         name: data.get("geo.name") as string,
@@ -122,7 +124,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
               name: albums.find((album) => album.id === albumId)?.title!,
             }
           : null,
-        items: [],
+        items: doc && doc.photos.album?.id === albumId ? doc.photos.items : [],
       },
     });
 
@@ -203,7 +205,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
           </label>
           <label>
             Body
-            <textarea rows={6} name="description.body" required />
+            <textarea rows={10} name="description.body" required />
           </label>
         </fieldset>
         <fieldset>

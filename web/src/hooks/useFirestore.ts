@@ -1,5 +1,6 @@
 import {
   collection,
+  collectionGroup,
   connectFirestoreEmulator,
   deleteDoc,
   doc,
@@ -9,6 +10,7 @@ import {
   QueryConstraint,
   QuerySnapshot,
   setDoc,
+  Timestamp,
 } from "firebase/firestore";
 import { useCallback, useMemo } from "react";
 import {
@@ -17,8 +19,20 @@ import {
   useDocumentData as useBaseDocument,
   useDocumentDataOnce as useBaseDocumentOnce,
 } from "react-firebase-hooks/firestore";
-import { AddId, Collection, Doc } from "../api";
+import { AddId, AddIdAndRef, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
+
+type LastElementOf<T extends readonly unknown[]> = T extends readonly [
+  ...unknown[],
+  infer Last,
+]
+  ? Last
+  : never;
+
+type CollectionPath =
+  | [Collection]
+  | [Collection, string, Collection]
+  | [Collection, string, Collection, string, Collection];
 
 const USE_EMULATOR = false;
 
@@ -39,11 +53,20 @@ function useFirestore() {
   return firestore;
 }
 
-export function useCollectionRef(collectionId: Collection) {
+export function useCollectionRef(...path: CollectionPath) {
   const firestore = useFirestore();
 
   return useMemo(
-    () => collection(firestore, collectionId),
+    () => collection(firestore, path[0], ...path.slice(1)),
+    [path, firestore],
+  );
+}
+
+export function useCollectionGroupRef(collectionId: Collection) {
+  const firestore = useFirestore();
+
+  return useMemo(
+    () => collectionGroup(firestore, collectionId),
     [collectionId, firestore],
   );
 }
@@ -57,8 +80,25 @@ export function useDocRef(collectionId: Collection, docId: string) {
   );
 }
 
-export function useCollection<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionRef(collectionId);
+export function useCollection<R extends CollectionPath>(...path: R) {
+  const collectionRef = useCollectionRef(...path);
+  const [snapshot, loading, error] = useBaseCollection<Doc<LastElementOf<R>>>(
+    collectionRef as any,
+  );
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (loading || !snapshot) {
+    return [];
+  }
+
+  return getCollectionData(snapshot);
+}
+
+export function useCollectionGroup<T extends Collection>(collectionId: T) {
+  const collectionRef = useCollectionGroupRef(collectionId);
   const [snapshot, loading, error] = useBaseCollection<Doc<T>>(
     collectionRef as any,
   );
@@ -74,30 +114,32 @@ export function useCollection<T extends Collection>(collectionId: T) {
   return getCollectionData(snapshot);
 }
 
-export function useCollectionOnce<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionRef(collectionId);
-  const [snapshot, loading, error] = useBaseCollectionOnce<Doc<T>>(
-    collectionRef as any,
-  );
+export function useCollectionOnce<R extends CollectionPath>(
+  ...collectionRef: R
+) {
+  const ref = useCollectionRef(...collectionRef);
+  const [snapshot, loading, error, reload] = useBaseCollectionOnce<
+    Doc<LastElementOf<R>>
+  >(ref as any);
 
   if (error) {
     console.error(error);
   }
 
   if (loading || !snapshot) {
-    return [];
+    return [[] as AddId<Doc<LastElementOf<R>>>[]] as const;
   }
 
-  return getCollectionData(snapshot);
+  return [getCollectionData(snapshot), reload] as const;
 }
 
-export function useQuery<T extends Collection>(
-  collectionId: T,
+export function useQuery<R extends CollectionPath>(
+  collectionRef: R,
   ...queryConstraints: QueryConstraint[]
 ) {
-  const collectionRef = useCollectionRef(collectionId);
-  const [snapshot, loading, error] = useBaseCollection<Doc<T>>(
-    query(collectionRef as any, ...queryConstraints),
+  const ref = useCollectionRef(...collectionRef);
+  const [snapshot, loading, error] = useBaseCollection<Doc<LastElementOf<R>>>(
+    query(ref as any, ...queryConstraints),
   );
 
   if (error) {
@@ -126,7 +168,7 @@ export function useDocument<T extends Collection>(
     return null;
   }
 
-  return data;
+  return parseDocData(data);
 }
 
 export function useDocumentOnce<T extends Collection>(
@@ -144,35 +186,48 @@ export function useDocumentOnce<T extends Collection>(
     return null;
   }
 
-  return data;
+  return parseDocData(data);
 }
 
-export function useDocWriter<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionRef(collectionId);
+export function useDocWriter<R extends CollectionPath>(...collectionRef: R) {
+  const ref = useCollectionRef(...collectionRef);
 
   return useCallback(
-    async function (docId: string, data: Partial<Doc<T>>) {
-      await setDoc(doc(collectionRef, docId), data, { merge: true });
+    async function (docId: string, data: Partial<Doc<LastElementOf<R>>>) {
+      await setDoc(doc(ref, docId), data, { merge: true });
     },
-    [collectionRef],
+    [ref],
   );
 }
 
-export function useDocDeleter(collectionId: Collection) {
-  const collectionRef = useCollectionRef(collectionId);
+export function useDocDeleter<R extends CollectionPath>(...collectionRef: R) {
+  const ref = useCollectionRef(...collectionRef);
 
   return useCallback(
     async function (docId: string) {
-      await deleteDoc(doc(collectionRef, docId));
+      await deleteDoc(doc(ref, docId));
     },
-    [collectionRef],
+    [ref],
   );
 }
 
 function getCollectionData<T extends DocumentData>(snapshot: QuerySnapshot<T>) {
-  const data: AddId<T>[] = [];
+  const data: AddIdAndRef<T>[] = [];
   snapshot.forEach(function (doc) {
-    data.push({ id: doc.id, ...doc.data() } as any);
+    data.push({ id: doc.id, _ref: doc.ref, ...parseDocData(doc.data()) });
+  });
+
+  return data;
+}
+
+function parseDocData<T extends DocumentData>(data: T) {
+  Object.entries(data).forEach(([key, value]) => {
+    if (typeof value === "object" && value !== null) {
+      data[key as keyof T] = parseDocData(value);
+    }
+    if (value instanceof Timestamp) {
+      data[key as keyof T] = value.toDate() as any;
+    }
   });
 
   return data;

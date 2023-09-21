@@ -1,3 +1,4 @@
 export { CallableFunction } from "firebase-functions/v2/https";
 
-export * from "./getPhoto";
+export * from "./cleanPhotos";
+export * from "./downloadPhoto";
