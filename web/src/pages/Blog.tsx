@@ -35,7 +35,10 @@ export function Blog() {
                   dateEnd={update.date.end}
                 />
                 <Body text={update.description.body} />
-                <Photos items={update.photos.items} />
+                <Photos
+                  items={update.photos.items}
+                  map={`${update.location.name}, ${update.location.country}`}
+                />
                 <Footer updateId={update.id} />
               </article>
             ))

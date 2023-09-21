@@ -78,12 +78,22 @@ main > article:first-child {
   margin-top: 0;
 }
 
+article {
+  position: relative;
+}
+
 article hgroup {
   margin-bottom: 0;
 
   *:last-child {
     margin-bottom: 0;
   }
+}
+
+article aside {
+  margin: calc(var(--block-spacing-vertical) * -1)
+    calc(var(--block-spacing-horizontal) * -1);
+  margin-bottom: var(--block-spacing-vertical);
 }
 
 article footer {
