@@ -90,12 +90,6 @@ article hgroup {
   }
 }
 
-article aside {
-  margin: calc(var(--block-spacing-vertical) * -1)
-    calc(var(--block-spacing-horizontal) * -1);
-  margin-bottom: var(--block-spacing-vertical);
-}
-
 article footer {
   ol {
     list-style: none;
