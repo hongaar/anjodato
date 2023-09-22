@@ -136,8 +136,14 @@ footer.container-fluid > div {
       margin-right: calc(var(--spacing) * 0.5);
     }
 
-    a:is([aria-current], &:hover, &:active, &:focus) {
+    &:is(&:hover, &:active, &:focus) {
       background: var(--form-element-disabled-background-color);
+    }
+
+    &[aria-current],
+    &[aria-current]:is(&:hover, &:active, &:focus) {
+      background: var(--secondary);
+      color: var(--secondary-inverse);
     }
   }
 }

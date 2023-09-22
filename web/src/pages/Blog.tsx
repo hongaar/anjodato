@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet";
+import { useLocalStorage } from "usehooks-ts";
 import { Link } from "wouter";
 import { Collection } from "../api";
 import { Body, Footer, Header, Labels, Photos } from "../components/Blog";
@@ -7,6 +8,7 @@ import { useCollectionOnce } from "../hooks";
 export function Blog({ params }: { params: { label: string } }) {
   console.debug("Rendering page Blog");
 
+  const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", false);
   const [updates] = useCollectionOnce(Collection.Updates);
   const [labels] = useCollectionOnce(Collection.Labels);
 
@@ -14,7 +16,15 @@ export function Blog({ params }: { params: { label: string } }) {
     updates === null
       ? null
       : updates
-          .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
+          .sort((a, b) =>
+            a.date.start > b.date.start
+              ? sortDesc
+                ? -1
+                : 1
+              : sortDesc
+              ? 1
+              : -1,
+          )
           .filter(
             (update) =>
               !params.label ||
@@ -37,7 +47,7 @@ export function Blog({ params }: { params: { label: string } }) {
       <main className="container-fluid">
         {currentUpdates === null ? (
           <article>
-            <p aria-busy="true">Aan het laden...</p>
+            <p aria-busy="true">Berichten laden...</p>
           </article>
         ) : currentUpdates.length > 0 ? (
           currentUpdates.map((update) => (
@@ -60,11 +70,22 @@ export function Blog({ params }: { params: { label: string } }) {
           ))
         ) : (
           <article>
-            <p>Geen updates</p>
+            <p>Geen berichten</p>
           </article>
         )}
       </main>
       <footer className="container-fluid">
+        <div>
+          <label>
+            <input
+              type="checkbox"
+              name="sortDesc"
+              checked={sortDesc}
+              onChange={(e) => setSortDesc(!sortDesc)}
+            />
+            Nieuwste berichten eerst
+          </label>
+        </div>
         <div>
           <Link href="/admin">𝜋</Link>
         </div>
