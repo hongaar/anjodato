@@ -117,6 +117,11 @@ footer.container-fluid > div {
   > header {
     padding-bottom: 0;
   }
+
+  > header,
+  > footer {
+    text-align: center;
+  }
 }
 
 #root > header,
@@ -235,8 +240,4 @@ button[type="submit"] {
   position: absolute;
   white-space: nowrap;
   width: 1px;
-}
-
-.center {
-  text-align: center;
 }

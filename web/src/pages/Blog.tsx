@@ -49,7 +49,7 @@ export function Blog() {
         )}
       </main>
       <footer className="container-fluid">
-        <div className="center">
+        <div>
           <Link href="/admin">𝜋</Link>
         </div>
       </footer>
