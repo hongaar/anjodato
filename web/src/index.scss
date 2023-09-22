@@ -70,19 +70,85 @@ button.link {
 
 // layout
 
-body > main {
-  padding-top: 0;
+.container-fluid {
+  max-width: 1600px;
+
+  section > p,
+  header > hgroup,
+  footer > div,
+  article p[aria-busy="true"] {
+    max-width: 42rem;
+    margin: 0 auto;
+  }
+
+  footer > div {
+    // comments
+    @media (min-width: 992px) {
+      max-width: 1400px;
+    }
+  }
+}
+
+header.container-fluid > hgroup,
+footer.container-fluid > div {
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+#root {
+  width: 100%;
+  margin: 0;
+
+  > header,
+  > main,
+  > footer {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding: var(--block-spacing-vertical) var(--block-spacing-horizontal);
+  }
+
+  > main {
+    @media (max-width: 991px) {
+      padding: var(--block-spacing-vertical) 0;
+    }
+  }
+
+  > header {
+    padding-bottom: 0;
+  }
+}
+
+#root > header,
+#root > main,
+#root > footer,
+section {
+  @media (min-width: 576px) {
+    --block-spacing-vertical: calc(var(--spacing) * 1.25);
+  }
+
+  @media (min-width: 768px) {
+    --block-spacing-vertical: calc(var(--spacing) * 1.5);
+  }
+
+  @media (min-width: 992px) {
+    --block-spacing-vertical: calc(var(--spacing) * 1.75);
+  }
+
+  @media (min-width: 1200px) {
+    --block-spacing-vertical: calc(var(--spacing) * 2);
+  }
+}
+
+main > article {
+  margin: calc(var(--block-spacing-vertical) * 2) 0;
 }
 
 main > article:first-child {
   margin-top: 0;
 }
 
-article {
-  position: relative;
-}
-
-article hgroup {
+hgroup {
   margin-bottom: 0;
 
   *:last-child {
@@ -169,4 +235,8 @@ button[type="submit"] {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+.center {
+  text-align: center;
 }

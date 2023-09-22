@@ -33,7 +33,9 @@ export function Admin({ params }: { params: { workshop: string } }) {
         </Router>
       </main>
       <footer className="container">
-        ➡️ <Link href="/">Naar het blog</Link>
+        <div>
+          ➡️ <Link href="/">Naar het blog</Link>
+        </div>
       </footer>
     </AuthProvider>
   );

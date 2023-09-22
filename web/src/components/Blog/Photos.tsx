@@ -106,8 +106,14 @@ export function Photos({ map, items }: Props) {
       <PhotoAlbum
         photos={photos}
         layout="rows"
-        targetRowHeight={200}
         onClick={({ index }) => setIndex(index)}
+        targetRowHeight={(containerWidth) => {
+          if (containerWidth < 576) return Math.round(containerWidth / 2);
+          if (containerWidth < 768) return Math.round(containerWidth / 3);
+          if (containerWidth < 992) return Math.round(containerWidth / 4);
+          if (containerWidth < 1200) return Math.round(containerWidth / 5);
+          return Math.round(containerWidth / 6);
+        }}
       />
 
       <Lightbox

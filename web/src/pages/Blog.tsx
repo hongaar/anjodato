@@ -14,13 +14,13 @@ export function Blog() {
       <Helmet>
         <title>Blog</title>
       </Helmet>
-      <header className="container">
+      <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
           <p>Blog</p>
         </hgroup>
       </header>
-      <main className="container">
+      <main className="container-fluid">
         {updates && updates.length > 0 ? (
           updates
             .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
@@ -43,11 +43,15 @@ export function Blog() {
               </article>
             ))
         ) : (
-          <article aria-busy="true">Aan het laden...</article>
+          <article>
+            <p aria-busy="true">Aan het laden...</p>
+          </article>
         )}
       </main>
-      <footer className="container">
-        <Link href="/admin">𝜋</Link>
+      <footer className="container-fluid">
+        <div className="center">
+          <Link href="/admin">𝜋</Link>
+        </div>
       </footer>
     </>
   );

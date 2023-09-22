@@ -19,5 +19,9 @@ function formatText(text: string) {
 }
 
 export function Body({ text }: Props) {
-  return text ? <section>{formatText(text)}</section> : null;
+  return text ? (
+    <section>
+      <p>{formatText(text)}</p>
+    </section>
+  ) : null;
 }
