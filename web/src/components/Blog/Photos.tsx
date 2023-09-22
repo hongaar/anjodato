@@ -53,6 +53,8 @@ function getMapsUrl(location: string, width = 640, scale = 2, dark = false) {
 }
 
 export function Photos({ map, items }: Props) {
+  console.debug("Rendering component Blog/Photos");
+
   const [index, setIndex] = useState(-1);
   const { isDarkMode } = useDarkMode();
 

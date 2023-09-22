@@ -3,6 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { Link, Route, Router } from "wouter";
 import {
   Comments,
+  Labels,
   Navigation,
   UpdatesEdit,
   UpdatesList,
@@ -18,21 +19,22 @@ export function Admin({ params }: { params: { workshop: string } }) {
         <title>Admin</title>
       </Helmet>
       <Toaster />
-      <header className="container">
+      <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
           <p>Admin</p>
         </hgroup>
         <Navigation />
       </header>
-      <main className="container">
+      <main className="container-fluid">
         <Router base="/admin">
+          <Route path="/labels" component={Labels} />
           <Route path="/updates/:id" component={UpdatesEdit} />
           <Route path="/updates" component={UpdatesList} />
           <Route path="/comments" component={Comments} />
         </Router>
       </main>
-      <footer className="container">
+      <footer className="container-fluid">
         <div>
           ➡️ <Link href="/">Naar het blog</Link>
         </div>

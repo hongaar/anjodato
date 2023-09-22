@@ -5,6 +5,7 @@ import { Collection, DocWithId, Functions } from "../../api/schema";
 import {
   useAuth,
   useCollection,
+  useCollectionOnce,
   useDocDeleter,
   useDocWriter,
   useGapi,
@@ -18,6 +19,7 @@ export function UpdatesList() {
   const { user } = useAuth();
   const { isAuthorized, authorize, unauthorize, client } = useGapi();
   const updates = useCollection(Collection.Updates);
+  const [labels] = useCollectionOnce(Collection.Labels);
   const writeUpdate = useDocWriter(Collection.Updates);
   const deleteUpdate = useDocDeleter(Collection.Updates);
   const cleanPhotos = useFunction(Functions.CleanPhotos);
@@ -115,17 +117,30 @@ export function UpdatesList() {
         <thead>
           <tr>
             <th scope="col">Title</th>
+            <th scope="col">Label</th>
             <th scope="col">Album</th>
             <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {updates && updates.length > 0 ? (
+          {updates === null ? (
+            <tr>
+              <th scope="row" colSpan={3} aria-busy="true">
+                Loading...
+              </th>
+            </tr>
+          ) : updates.length > 0 ? (
             updates
               .sort((a, b) => (a.date.start > b.date.start ? 1 : -1))
               .map((update) => (
                 <tr key={update.id}>
                   <th scope="row">
+                    {update.description.title ? (
+                      <>
+                        {update.description.title}
+                        <br />
+                      </>
+                    ) : null}
                     {formatIso(update.date.start)}
                     <br />
                     <a
@@ -133,11 +148,31 @@ export function UpdatesList() {
                       rel="noreferrer"
                       target="_blank"
                     >
-                      {update.location.name}{" "}
+                      {update.location.name}
                     </a>
-                    <br />
-                    {update.description.title}
                   </th>
+                  <td>
+                    {update.label ? (
+                      labels !== null ? (
+                        <span className="label">
+                          <span className="emoji">
+                            {
+                              labels.find(
+                                (label) => label.id === update.label!.id,
+                              )?.emoji
+                            }{" "}
+                          </span>
+                          {
+                            labels.find(
+                              (label) => label.id === update.label!.id,
+                            )?.name
+                          }
+                        </span>
+                      ) : (
+                        "Loading"
+                      )
+                    ) : null}
+                  </td>
                   <td>
                     <a
                       href={update.photos.album?.url}
@@ -159,7 +194,7 @@ export function UpdatesList() {
                         onClick={async () => {
                           if (
                             prompt(
-                              'If you really want to delete this blog, type "yes"',
+                              'If you really want to delete this update, type "yes"',
                               "no",
                             ) === "yes"
                           ) {
@@ -179,8 +214,8 @@ export function UpdatesList() {
               ))
           ) : (
             <tr>
-              <th scope="row" colSpan={3} aria-busy="true">
-                Loading...
+              <th scope="row" colSpan={4}>
+                No updates
               </th>
             </tr>
           )}

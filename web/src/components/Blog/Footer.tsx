@@ -13,6 +13,8 @@ type Props = {
 const DELETE_GRACE_SECONDS = 60 * 60;
 
 export function Footer({ updateId }: Props) {
+  console.debug("Rendering component Blog/Footer");
+
   const path = [Collection.Updates, updateId, Collection.Comments] as const;
   const [comments, reload] = useCollectionOnce(...path);
   const writeComment = useDocWriter(...path);
@@ -74,7 +76,9 @@ export function Footer({ updateId }: Props) {
       <div>
         <h3>Reacties</h3>
         <div className="grid">
-          {comments.length > 0 ? (
+          {comments === null ? (
+            <p aria-busy="true">Aan het laden...</p>
+          ) : comments.length > 0 ? (
             <ol>
               {comments
                 .sort((a, b) => (a.date > b.date ? 1 : -1))

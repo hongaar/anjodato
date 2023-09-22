@@ -6,6 +6,7 @@ import type {
 import { CollectionReference, DocumentReference } from "firebase/firestore";
 
 export enum Collection {
+  Labels = "labels",
   Updates = "updates",
   Comments = "comments",
 }
@@ -34,7 +35,13 @@ export type FunctionReturn<Function> = Function extends CallableFunction<
   ? Awaited<Return>
   : never;
 
+export type Label = {
+  emoji: string;
+  name: string;
+};
+
 export type Update = {
+  label: DocumentReference<Label> | null;
   date: {
     start: Date;
     end: Date | null;
@@ -74,6 +81,7 @@ export type Comment = {
 };
 
 type DocEnum = {
+  [Collection.Labels]: Label;
   [Collection.Updates]: Update;
   [Collection.Comments]: Comment;
 };

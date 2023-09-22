@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Lora&family=Work+Sans:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora&family=Noto+Color+Emoji&family=Work+Sans:wght@400;600&display=swap");
 
 :root {
   font-family: "Work Sans", sans-serif;
@@ -76,7 +76,7 @@ button.link {
   section > p,
   header > hgroup,
   footer > div,
-  article p[aria-busy="true"] {
+  article > p {
     max-width: 42rem;
     margin: 0 auto;
   }
@@ -118,9 +118,27 @@ footer.container-fluid > div {
     padding-bottom: 0;
   }
 
+  > nav,
   > header,
   > footer {
     text-align: center;
+  }
+}
+
+#root > nav {
+  padding: var(--block-spacing-vertical) 0;
+  justify-content: center;
+
+  > a {
+    margin: 0 calc(var(--spacing) * 0.25);
+
+    .emoji {
+      margin-right: calc(var(--spacing) * 0.5);
+    }
+
+    a:is([aria-current], &:hover, &:active, &:focus) {
+      background: var(--form-element-disabled-background-color);
+    }
   }
 }
 
@@ -240,4 +258,18 @@ button[type="submit"] {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+.emoji {
+  font-family: "Noto Color Emoji", sans-serif;
+}
+
+.label {
+  display: inline-block;
+  padding: 0.375rem 0.5rem;
+  border-radius: var(--border-radius);
+  background: var(--code-background-color);
+  color: var(--code-color);
+  line-height: initial;
+  // font-size: 0.875em;
 }

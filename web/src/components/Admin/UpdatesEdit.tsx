@@ -5,7 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "wouter";
 import { GOOGLE_API_KEY, formatIso, getAllAlbums } from "../../api";
 import { Collection } from "../../api/schema";
-import { useAuth, useDocWriter, useDocument, useGapi } from "../../hooks";
+import {
+  useAuth,
+  useCollectionOnce,
+  useDocWriter,
+  useDocument,
+  useGapi,
+} from "../../hooks";
 
 type PlaceResult = {
   label: string;
@@ -30,6 +36,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
   const { user } = useAuth();
   const { isAuthorized, authorize, unauthorize, client } = useGapi();
   const doc = useDocument(Collection.Updates, id || "x");
+  const [labels] = useCollectionOnce(Collection.Labels);
   const writeUpdate = useDocWriter(Collection.Updates);
   const [geo, setGeoValue] = useState<PlaceResult | null>(null);
   const [albums, setAlbums] = useSessionStorage(
@@ -57,6 +64,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     }
 
     if (doc) {
+      setValue("label", doc.label ? doc.label.id : "");
       setInputValue("date.start", formatIso(doc.date.start));
       setInputValue("date.end", doc.date.end ? formatIso(doc.date.end) : null);
       setInputValue("geo.name", doc.location.name);
@@ -101,6 +109,9 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     const albumId = data.get("photos.album") as string;
 
     writeUpdate(id || uuidv4(), {
+      label: data.get("label")
+        ? labels?.find((label) => label.id === data.get("label"))?._ref
+        : null,
       date: {
         start: new Date(data.get("date.start") as string),
         end: data.get("date.end")
@@ -117,13 +128,16 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
         body: data.get("description.body") as string,
       },
       photos: {
-        album: albumId
-          ? {
-              id: albumId,
-              url: albums.find((album) => album.id === albumId)?.productUrl!,
-              name: albums.find((album) => album.id === albumId)?.title!,
-            }
-          : null,
+        album:
+          doc && albums.length === 0
+            ? doc.photos.album // If we don't have albums yet, keep the current album
+            : albumId
+            ? {
+                id: albumId,
+                url: albums.find((album) => album.id === albumId)?.productUrl!,
+                name: albums.find((album) => album.id === albumId)?.title!,
+              }
+            : null,
         items: doc && doc.photos.album?.id === albumId ? doc.photos.items : [],
       },
     });
@@ -155,6 +169,23 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     <>
       <h3>{id ? "Edit update" : "Add update"}</h3>
       <form onSubmit={addUpdate}>
+        <label>
+          Label:
+          <select name="label">
+            {labels ? (
+              <>
+                <option value="">No label</option>
+                {labels.map((label) => (
+                  <option key={label.id} value={label.id}>
+                    {label.name}
+                  </option>
+                ))}
+              </>
+            ) : (
+              <option>Loading labels...</option>
+            )}
+          </select>{" "}
+        </label>
         <fieldset>
           <legend>Date</legend>
           <div className="grid">

@@ -19,7 +19,7 @@ import {
   useDocumentData as useBaseDocument,
   useDocumentDataOnce as useBaseDocumentOnce,
 } from "react-firebase-hooks/firestore";
-import { AddId, AddIdAndRef, Collection, Doc } from "../api";
+import { AddIdAndRef, Collection, Doc } from "../api";
 import { useFirebase } from "./useFirebase";
 
 type LastElementOf<T extends readonly unknown[]> = T extends readonly [
@@ -91,7 +91,7 @@ export function useCollection<R extends CollectionPath>(...path: R) {
   }
 
   if (loading || !snapshot) {
-    return [];
+    return null;
   }
 
   return getCollectionData(snapshot);
@@ -108,7 +108,7 @@ export function useCollectionGroup<T extends Collection>(collectionId: T) {
   }
 
   if (loading || !snapshot) {
-    return [];
+    return null;
   }
 
   return getCollectionData(snapshot);
@@ -127,7 +127,7 @@ export function useCollectionOnce<R extends CollectionPath>(
   }
 
   if (loading || !snapshot) {
-    return [[] as AddId<Doc<LastElementOf<R>>>[]] as const;
+    return [null] as const;
   }
 
   return [getCollectionData(snapshot), reload] as const;
@@ -222,7 +222,12 @@ function getCollectionData<T extends DocumentData>(snapshot: QuerySnapshot<T>) {
 
 function parseDocData<T extends DocumentData>(data: T) {
   Object.entries(data).forEach(([key, value]) => {
-    if (typeof value === "object" && value !== null) {
+    if (
+      typeof value === "object" &&
+      value !== null &&
+      value.constructor === Object
+    ) {
+      // console.log({ value });
       data[key as keyof T] = parseDocData(value);
     }
     if (value instanceof Timestamp) {

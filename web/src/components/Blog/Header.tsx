@@ -17,6 +17,8 @@ export function Header({
   dateStart,
   dateEnd,
 }: Props) {
+  console.debug("Rendering component Blog/Header");
+
   return (
     <header>
       <hgroup>

@@ -13,6 +13,9 @@ export function Navigation() {
       </ul>
       <ul>
         <li>
+          <Link href="/admin/labels">Labels</Link>
+        </li>
+        <li>
           <Link href="/admin/updates">Updates</Link>
         </li>
         <li>

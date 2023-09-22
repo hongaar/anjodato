@@ -25,7 +25,13 @@ export function Comments() {
           </tr>
         </thead>
         <tbody>
-          {comments && comments.length > 0 ? (
+          {comments === null ? (
+            <tr>
+              <th scope="row" colSpan={4} aria-busy="true">
+                Loading...
+              </th>
+            </tr>
+          ) : comments.length > 0 ? (
             comments
               .sort((a, b) => (a.date > b.date ? 1 : -1))
               .map((comment) => (
@@ -39,7 +45,7 @@ export function Comments() {
                         onClick={async () => {
                           if (
                             prompt(
-                              'If you really want to comment this comment, type "yes"',
+                              'If you really want to delete this comment, type "yes"',
                               "no",
                             ) === "yes"
                           ) {
@@ -55,8 +61,8 @@ export function Comments() {
               ))
           ) : (
             <tr>
-              <th scope="row" colSpan={4} aria-busy="true">
-                Loading...
+              <th scope="row" colSpan={4}>
+                No comments
               </th>
             </tr>
           )}

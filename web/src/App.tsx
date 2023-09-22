@@ -10,6 +10,7 @@ export function App() {
       <Helmet titleTemplate="%s | AnJoDaTo" />
       <Switch>
         <Route path="/admin/:sub*" component={Admin} />
+        <Route path="/:label" component={Blog} />
         <Route path="/" component={Blog} />
         <Route component={NotFound} />
       </Switch>

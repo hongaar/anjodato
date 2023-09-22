@@ -19,6 +19,8 @@ function formatText(text: string) {
 }
 
 export function Body({ text }: Props) {
+  console.debug("Rendering component Blog/Body");
+
   return text ? (
     <section>
       <p>{formatText(text)}</p>
