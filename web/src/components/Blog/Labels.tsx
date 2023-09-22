@@ -17,7 +17,11 @@ export function Labels({ labels, activeName }: Props) {
     <nav>
       {labels.map((label) => (
         <Link
-          href={activeName === label.name ? "/" : `/${label.name}`}
+          href={
+            activeName === label.name
+              ? "/"
+              : `/${encodeURIComponent(label.name)}`
+          }
           className="label"
           aria-current={activeName === label.name ? "page" : undefined}
           key={label.id}

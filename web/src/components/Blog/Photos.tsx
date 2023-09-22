@@ -2,6 +2,8 @@ import { useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import { useDarkMode } from "usehooks-ts";
 import Lightbox from "yet-another-react-lightbox";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
+
 import "yet-another-react-lightbox/styles.css";
 import { GOOGLE_API_KEY } from "../../api";
 
@@ -123,6 +125,7 @@ export function Photos({ map, items }: Props) {
         open={index >= 0}
         index={index}
         close={() => setIndex(-1)}
+        plugins={[Zoom]}
       />
     </>
   );
