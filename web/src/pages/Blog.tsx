@@ -8,7 +8,7 @@ import { useCollectionOnce } from "../hooks";
 export function Blog({ params }: { params: { label: string } }) {
   console.debug("Rendering page Blog");
 
-  const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", false);
+  const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", true);
   const [updates] = useCollectionOnce(Collection.Updates);
   const [labels] = useCollectionOnce(Collection.Labels);
 
