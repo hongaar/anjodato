@@ -28,12 +28,46 @@
   }
 }
 
-// lightbox fix
+// photo album
+
+.react-photo-album--row {
+  > span {
+    position: relative;
+
+    .likes {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      opacity: 0;
+      transition: opacity 0.25s ease-in-out;
+      will-change: opacity;
+      padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+      color: white;
+      text-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+    }
+
+    &:hover {
+      .likes {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// lightbox
 
 .yarl__root {
   button {
     width: unset;
     --box-shadow: none;
+  }
+}
+
+.yarl__button {
+  &[aria-busy="true"]::before {
+    position: absolute;
+    left: -1em;
+    top: calc(50% - 0.5em);
   }
 }
 

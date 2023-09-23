@@ -3,7 +3,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Link } from "wouter";
 import { Collection } from "../api";
 import { Body, Footer, Header, Labels, Photos } from "../components/Blog";
-import { useCollectionOnce } from "../hooks";
+import { useCollection, useCollectionOnce } from "../hooks";
 
 export function Blog({ params }: { params: { label: string } }) {
   console.debug("Rendering page Blog");
@@ -11,6 +11,7 @@ export function Blog({ params }: { params: { label: string } }) {
   const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", true);
   const [updates] = useCollectionOnce(Collection.Updates);
   const [labels] = useCollectionOnce(Collection.Labels);
+  const likes = useCollection(Collection.Likes);
 
   const currentUpdates =
     updates === null
@@ -64,6 +65,7 @@ export function Blog({ params }: { params: { label: string } }) {
               <Photos
                 items={update.photos.items}
                 map={`${update.location.name}, ${update.location.country}`}
+                likes={likes}
               />
               <Footer updateId={update.id} />
             </article>

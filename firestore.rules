@@ -13,5 +13,9 @@ service cloud.firestore {
           allow delete: if (resource.data.date.toMillis() + 3600000 > request.time.toMillis());
         }
     }
+    
+    match /likes/{document=**} {
+        allow read, write: if true;
+    }
   }
 }

@@ -9,6 +9,7 @@ export enum Collection {
   Labels = "labels",
   Updates = "updates",
   Comments = "comments",
+  Likes = "likes",
 }
 
 export enum Functions {
@@ -80,10 +81,16 @@ export type Comment = {
   comment: string;
 };
 
+export type Like = {
+  url: string;
+  counter: number;
+};
+
 type DocEnum = {
   [Collection.Labels]: Label;
   [Collection.Updates]: Update;
   [Collection.Comments]: Comment;
+  [Collection.Likes]: Like;
 };
 
 export type Doc<T extends Collection> = DocEnum[T];

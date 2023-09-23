@@ -1,11 +1,24 @@
-import { useState } from "react";
+import { MouseEvent, useMemo, useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import { useDarkMode } from "usehooks-ts";
-import Lightbox from "yet-another-react-lightbox";
+import { v4 as uuidv4 } from "uuid";
+import Lightbox, {
+  PluginProps,
+  addToolbarButton,
+  useLightboxProps,
+  useLightboxState,
+} from "yet-another-react-lightbox";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import "yet-another-react-lightbox/styles.css";
-import { GOOGLE_API_KEY } from "../../api";
+import { AddIdAndRef, Collection, GOOGLE_API_KEY, Like } from "../../api";
+import { useDocWriter } from "../../hooks";
+
+declare module "yet-another-react-lightbox" {
+  interface LightboxProps {
+    likes?: AddIdAndRef<Like>[] | null;
+  }
+}
 
 type Props = {
   items: {
@@ -14,6 +27,7 @@ type Props = {
     height: number;
   }[];
   map?: string;
+  likes: AddIdAndRef<Like>[] | null;
 };
 
 const sizes = [3840, 2400, 1080, 640, 384, 256];
@@ -54,55 +68,119 @@ function getMapsUrl(location: string, width = 640, scale = 2, dark = false) {
   )}&zoom=7`;
 }
 
-export function Photos({ map, items }: Props) {
+function renderCounter(counter?: number) {
+  return counter ? "!".repeat(counter) : "";
+}
+
+function LikeButton() {
+  const { currentSlide } = useLightboxState();
+  const { likes } = useLightboxProps();
+  const write = useDocWriter(Collection.Likes);
+
+  if (!currentSlide) {
+    return null;
+  }
+
+  const currentLike = likes?.find(
+    (like) => like.url === (currentSlide as any).key,
+  );
+
+  async function addLike(e: MouseEvent<HTMLButtonElement>) {
+    const target = e.currentTarget;
+
+    target.setAttribute("aria-busy", "true");
+
+    await write(currentLike?.id || uuidv4(), {
+      url: (currentSlide as any).key,
+      counter: currentLike ? currentLike.counter + 1 : 1,
+    });
+
+    target.setAttribute("aria-busy", "false");
+  }
+
+  return (
+    <button
+      onClick={addLike}
+      type="button"
+      className="yarl__button"
+      aria-busy={likes === null ? "true" : "false"}
+    >
+      {likes === null
+        ? ""
+        : `❤️ Mooi hoor ${renderCounter(currentLike?.counter)}`}
+    </button>
+  );
+}
+
+/** Fullscreen plugin */
+export function LikePlugin({ augment, contains, addParent }: PluginProps) {
+  augment(({ toolbar, ...restProps }) => ({
+    toolbar: addToolbarButton(toolbar, "like", <LikeButton />),
+    ...restProps,
+  }));
+}
+
+export function Photos({ map, items, likes }: Props) {
   console.debug("Rendering component Blog/Photos");
 
   const [index, setIndex] = useState(-1);
   const { isDarkMode } = useDarkMode();
 
-  if (Photos.length === 0) {
-    return null;
-  }
+  const photos = useMemo(() => {
+    const photos = items.map((photo) => {
+      const { width, height } = getDimension(
+        sizes[0],
+        photo.width,
+        photo.height,
+      );
 
-  const photos = items.map((photo) => {
-    const { width, height } = getDimension(sizes[0], photo.width, photo.height);
+      return {
+        key: photo.url,
+        src: getUrl(photo.url, width),
+        width,
+        height,
+        srcSet: sizes.map((size) => {
+          const { width, height } = getDimension(
+            size,
+            photo.width,
+            photo.height,
+          );
 
-    return {
-      key: photo.url,
-      src: getUrl(photo.url, width),
-      width,
-      height,
-      srcSet: sizes.map((size) => {
-        const { width, height } = getDimension(size, photo.width, photo.height);
-
-        return {
-          src: getUrl(photo.url, size),
-          width,
-          height,
-        };
-      }),
-    };
-  });
-
-  if (map) {
-    photos.unshift({
-      key: "googlemaps",
-      src: getMapsUrl(map, 640, 2, isDarkMode),
-      width: 1280,
-      height: 960,
-      srcSet: [
-        {
-          src: getMapsUrl(map, 640, 2, isDarkMode),
-          width: 1280,
-          height: 960,
-        },
-        {
-          src: getMapsUrl(map, 400, 1, isDarkMode),
-          width: 800,
-          height: 600,
-        },
-      ],
+          return {
+            src: getUrl(photo.url, size),
+            width,
+            height,
+          };
+        }),
+      };
     });
+
+    if (map) {
+      photos.unshift({
+        key: "googlemaps",
+        src: getMapsUrl(map, 640, 2, isDarkMode),
+        width: 1280,
+        height: 960,
+        srcSet: [
+          {
+            src: getMapsUrl(map, 640, 2, isDarkMode),
+            width: 1280,
+            height: 960,
+          },
+          {
+            src: getMapsUrl(map, 400, 1, isDarkMode),
+            width: 800,
+            height: 600,
+          },
+        ],
+      });
+    }
+
+    return photos;
+  }, [items, map, isDarkMode]);
+
+  if (items.length === 0) {
+    return null;
   }
 
   return (
@@ -118,6 +196,20 @@ export function Photos({ map, items }: Props) {
           if (containerWidth < 1200) return Math.round(containerWidth / 5);
           return Math.round(containerWidth / 6);
         }}
+        renderPhoto={({ photo, wrapperStyle, renderDefaultPhoto }) => {
+          const currentLike = likes?.find((like) => like.url === photo.key);
+
+          return (
+            <span style={wrapperStyle}>
+              {renderDefaultPhoto({ wrapped: true })}
+              {currentLike ? (
+                <span className="likes">
+                  ❤️ {renderCounter(currentLike.counter)}
+                </span>
+              ) : null}
+            </span>
+          );
+        }}
       />
 
       <Lightbox
@@ -125,7 +217,11 @@ export function Photos({ map, items }: Props) {
         open={index >= 0}
         index={index}
         close={() => setIndex(-1)}
-        plugins={[Zoom]}
+        on={{
+          view: ({ index }) => setIndex(index),
+        }}
+        plugins={[Zoom, LikePlugin]}
+        likes={likes}
       />
     </>
   );
