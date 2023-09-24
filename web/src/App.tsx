@@ -7,7 +7,7 @@ export function App() {
 
   return (
     <>
-      <Helmet titleTemplate="%s | AnJoDaTo" />
+      <Helmet titleTemplate="%s / AnJoDaTo" />
       <Switch>
         <Route path="/admin/:sub*" component={Admin} />
         <Route path="/:label" component={Blog} />

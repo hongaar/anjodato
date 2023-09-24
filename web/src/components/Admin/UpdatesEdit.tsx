@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, MouseEvent, useEffect, useState } from "react";
 import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { useSessionStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
@@ -78,12 +78,16 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     }
   }, [doc]);
 
-  async function getAlbums() {
+  async function getAlbums(e: MouseEvent<HTMLButtonElement>) {
     if (!client) {
       return;
     }
 
-    setAlbums([{ title: "Loading..." }]);
+    const target = e.currentTarget;
+
+    target.setAttribute("aria-busy", "true");
+    setAlbums([]);
+
     try {
       const albums = await getAllAlbums(client);
       setAlbums(albums || []);
@@ -94,12 +98,15 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
         "status" in error &&
         error.status === 401
       ) {
-        setAlbums([{ title: "Please re-authorize..." }]);
         unauthorize();
       } else {
+        target.setAttribute("aria-busy", "false");
+
         throw error;
       }
     }
+
+    target.setAttribute("aria-busy", "false");
   }
 
   function addUpdate(e: FormEvent<HTMLFormElement>) {
@@ -138,7 +145,12 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
                 name: albums.find((album) => album.id === albumId)?.title!,
               }
             : null,
-        items: doc && doc.photos.album?.id === albumId ? doc.photos.items : [],
+        items:
+          doc && albums.length === 0
+            ? doc.photos.items // If we don't have albums yet, keep the current items
+            : doc && doc.photos.album?.id === albumId
+            ? doc.photos.items // If the album is the same, keep the current items
+            : [],
       },
     });
 

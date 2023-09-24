@@ -125,7 +125,7 @@ export function UpdatesList() {
         <tbody>
           {updates === null ? (
             <tr>
-              <th scope="row" colSpan={3} aria-busy="true">
+              <th scope="row" colSpan={4} aria-busy="true">
                 Loading...
               </th>
             </tr>

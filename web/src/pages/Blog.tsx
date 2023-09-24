@@ -36,7 +36,7 @@ export function Blog({ params }: { params: { label: string } }) {
   return (
     <>
       <Helmet>
-        <title>Blog</title>
+        <title>{params.label ? `${params.label} / ` : ""} Blog</title>
       </Helmet>
       <header className="container-fluid">
         <hgroup>
