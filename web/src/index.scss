@@ -198,11 +198,31 @@ footer.container-fluid > div {
   padding: var(--block-spacing-vertical) 0;
   justify-content: center;
 
+  &.truncate > a.label {
+    @media (max-width: 575px) {
+      .emoji {
+        margin-right: 0;
+      }
+
+      .name {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+      }
+    }
+  }
+
   > a {
     margin: 0 calc(var(--spacing) * 0.25);
 
-    .emoji {
-      margin-right: calc(var(--spacing) * 0.5);
+    &.label {
+      .emoji {
+        margin-right: calc(var(--spacing) * 0.5);
+      }
     }
 
     &:is(&:hover, &:active, &:focus) {

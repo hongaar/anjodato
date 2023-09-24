@@ -12,6 +12,9 @@ export function Blog({ params }: { params: { label: string } }) {
   const [updates] = useCollectionOnce(Collection.Updates);
   const [labels] = useCollectionOnce(Collection.Labels);
   const likes = useCollection(Collection.Likes);
+  const label = params.label ? decodeURIComponent(params.label) : undefined;
+
+  console.log({ label });
 
   const currentUpdates =
     updates === null
@@ -28,23 +31,23 @@ export function Blog({ params }: { params: { label: string } }) {
           )
           .filter(
             (update) =>
-              !params.label ||
+              !label ||
               update.label?.id ===
-                labels?.find((label) => label.name === params.label)?.id,
+                labels?.find((item) => item.name === label)?.id,
           );
 
   return (
     <>
       <Helmet>
-        <title>{params.label ? `${params.label} / ` : ""} Blog</title>
+        <title>{label ? `${label} / ` : ""} Blog</title>
       </Helmet>
       <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
-          <p>Blog{params.label ? ` / ${params.label}` : null}</p>
+          <p>Blog{label ? ` / ${label}` : null}</p>
         </hgroup>
       </header>
-      <Labels labels={labels} activeName={params.label} />
+      <Labels labels={labels} activeName={label} />
       <main className="container-fluid">
         {currentUpdates === null ? (
           <article>
