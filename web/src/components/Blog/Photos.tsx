@@ -1,4 +1,4 @@
-import { MouseEvent, useMemo, useState } from "react";
+import { MouseEvent, useCallback, useMemo, useState } from "react";
 import PhotoAlbum from "react-photo-album";
 import { useDarkMode } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
@@ -72,7 +72,7 @@ function renderCounter(counter?: number) {
   return counter ? "!".repeat(counter) : "";
 }
 
-function LikeButton() {
+function SlideLikeButton() {
   const { currentSlide } = useLightboxState();
   const { likes } = useLightboxProps();
   const write = useDocWriter(Collection.Likes);
@@ -105,9 +105,14 @@ function LikeButton() {
       className="yarl__button"
       aria-busy={likes === null ? "true" : "false"}
     >
-      {likes === null
-        ? ""
-        : `❤️ Mooi hoor ${renderCounter(currentLike?.counter)}`}
+      {likes === null ? (
+        ""
+      ) : (
+        <>
+          <span className="icon">❤️</span> Mooi hoor{" "}
+          {renderCounter(currentLike?.counter)}
+        </>
+      )}
     </button>
   );
 }
@@ -115,7 +120,7 @@ function LikeButton() {
 /** Fullscreen plugin */
 export function LikePlugin({ augment, contains, addParent }: PluginProps) {
   augment(({ toolbar, ...restProps }) => ({
-    toolbar: addToolbarButton(toolbar, "like", <LikeButton />),
+    toolbar: addToolbarButton(toolbar, "like", <SlideLikeButton />),
     ...restProps,
   }));
 }
@@ -125,6 +130,27 @@ export function Photos({ map, items, likes }: Props) {
 
   const [index, setIndex] = useState(-1);
   const { isDarkMode } = useDarkMode();
+  const writeLike = useDocWriter(Collection.Likes);
+
+  const addLike = useCallback(
+    async function (
+      e: MouseEvent<HTMLButtonElement>,
+      key: string,
+      currentLike?: AddIdAndRef<Like>,
+    ) {
+      const target = e.currentTarget;
+
+      target.setAttribute("aria-busy", "true");
+
+      await writeLike(currentLike?.id || uuidv4(), {
+        url: key,
+        counter: currentLike ? currentLike.counter + 1 : 1,
+      });
+
+      target.setAttribute("aria-busy", "false");
+    },
+    [writeLike],
+  );
 
   const photos = useMemo(() => {
     const photos = items.map((photo) => {
@@ -202,11 +228,21 @@ export function Photos({ map, items, likes }: Props) {
           return (
             <span style={wrapperStyle}>
               {renderDefaultPhoto({ wrapped: true })}
-              {currentLike ? (
-                <span className="likes">
-                  ❤️ {renderCounter(currentLike.counter)}
-                </span>
-              ) : null}
+              <button
+                onClick={(e) => addLike(e, photo.key, currentLike)}
+                type="button"
+                className="like"
+                aria-busy={likes === null ? "true" : "false"}
+              >
+                {likes === null ? (
+                  ""
+                ) : (
+                  <>
+                    <span className="icon">❤️</span>{" "}
+                    {renderCounter(currentLike?.counter)}
+                  </>
+                )}
+              </button>
             </span>
           );
         }}

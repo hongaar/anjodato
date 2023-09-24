@@ -34,20 +34,43 @@
   > span {
     position: relative;
 
-    .likes {
+    .like {
       position: absolute;
       bottom: 0;
       right: 0;
+
+      display: inline-block;
+      width: unset;
+      padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
+      margin: 0;
+
+      background-color: transparent;
+      color: white;
+      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+      box-shadow: none;
+
+      border: none;
+      outline: none;
+
       opacity: 0;
       transition: opacity 0.25s ease-in-out;
-      will-change: opacity;
-      padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
-      color: white;
-      text-shadow: 0 0 0.5em rgba(0, 0, 0, 0.5);
+      will-change: opacity, scale;
+
+      .icon {
+        display: inline-block;
+        will-change: transform;
+        transition: transform 0.25s ease-in-out;
+      }
+
+      &:hover {
+        .icon {
+          transform: scale(1.3);
+        }
+      }
     }
 
     &:hover {
-      .likes {
+      .like {
         opacity: 1;
       }
     }
@@ -68,6 +91,18 @@
     position: absolute;
     left: -1em;
     top: calc(50% - 0.5em);
+  }
+
+  .icon {
+    display: inline-block;
+    will-change: transform;
+    transition: transform 0.25s ease-in-out;
+  }
+
+  &:hover {
+    .icon {
+      transform: scale(1.3);
+    }
   }
 }
 
