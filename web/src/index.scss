@@ -68,7 +68,10 @@
       bottom: 0;
       right: 0;
 
-      display: none;
+      display: inline-flex;
+      align-items: center;
+      pointer-events: none;
+
       width: unset;
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
       margin: 0;
@@ -78,7 +81,7 @@
 
       .current-likes {
         position: relative;
-        left: 0.3em;
+        left: 0.39em;
         will-change: left;
         transition: left 0.25s ease-in-out;
       }
@@ -91,27 +94,22 @@
           opacity 0.25s ease-in-out;
       }
 
-      &:hover {
-        .add-like {
-          opacity: 1;
-        }
-      }
-
       @media (min-width: 576px) and (hover: hover) {
         & {
-          display: inline-flex;
-          align-items: center;
+          pointer-events: unset;
         }
       }
     }
 
-    &:hover .likes {
-      .current-likes {
-        left: 0;
-      }
+    @media (min-width: 576px) and (hover: hover) {
+      &:hover .likes {
+        .current-likes {
+          left: 0;
+        }
 
-      .add-like {
-        opacity: 1;
+        .add-like {
+          opacity: 1;
+        }
       }
     }
   }
@@ -131,6 +129,73 @@
     position: absolute;
     left: -1em;
     top: calc(50% - 0.5em);
+  }
+}
+
+// homepage
+
+nav.homepage {
+  a {
+    margin: 0 calc(var(--spacing) * 0.25);
+
+    &:hover {
+      text-decoration: none;
+
+      h2 {
+        text-decoration: underline;
+      }
+    }
+  }
+  h2 {
+    display: inline;
+  }
+}
+
+main.homepage {
+  article {
+    margin-top: 0;
+  }
+}
+
+// labels
+
+nav.labels {
+  &.truncate > a.label {
+    @media (max-width: 575px) {
+      .emoji {
+        margin-right: 0;
+      }
+
+      .name {
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        height: 1px;
+        overflow: hidden;
+        position: absolute;
+        white-space: nowrap;
+        width: 1px;
+      }
+    }
+  }
+
+  > a {
+    margin: 0 calc(var(--spacing) * 0.25);
+
+    &.label {
+      .emoji {
+        margin-right: calc(var(--spacing) * 0.5);
+      }
+    }
+
+    &:is(&:hover, &:active, &:focus) {
+      background: var(--form-element-disabled-background-color);
+    }
+
+    &[aria-current],
+    &[aria-current]:is(&:hover, &:active, &:focus) {
+      background: var(--secondary);
+      color: var(--secondary-inverse);
+    }
   }
 }
 
@@ -186,11 +251,11 @@ button.link {
   }
 }
 
-header.container-fluid > hgroup,
-footer.container-fluid > div {
-  max-width: 42rem;
-  margin: 0 auto;
-}
+// header.container-fluid > hgroup,
+// footer.container-fluid > div {
+//   max-width: 42rem;
+//   margin: 0 auto;
+// }
 
 #root {
   width: 100%;
@@ -225,44 +290,6 @@ footer.container-fluid > div {
 #root > nav {
   padding: var(--block-spacing-vertical) 0;
   justify-content: center;
-
-  &.truncate > a.label {
-    @media (max-width: 575px) {
-      .emoji {
-        margin-right: 0;
-      }
-
-      .name {
-        clip: rect(0 0 0 0);
-        clip-path: inset(50%);
-        height: 1px;
-        overflow: hidden;
-        position: absolute;
-        white-space: nowrap;
-        width: 1px;
-      }
-    }
-  }
-
-  > a {
-    margin: 0 calc(var(--spacing) * 0.25);
-
-    &.label {
-      .emoji {
-        margin-right: calc(var(--spacing) * 0.5);
-      }
-    }
-
-    &:is(&:hover, &:active, &:focus) {
-      background: var(--form-element-disabled-background-color);
-    }
-
-    &[aria-current],
-    &[aria-current]:is(&:hover, &:active, &:focus) {
-      background: var(--secondary);
-      color: var(--secondary-inverse);
-    }
-  }
 }
 
 #root > header,
@@ -381,6 +408,14 @@ button[type="submit"] {
   position: absolute;
   white-space: nowrap;
   width: 1px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
 }
 
 .emoji {
