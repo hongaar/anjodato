@@ -51,9 +51,13 @@ export function Map() {
         </div>
       </main>
       <footer className="container-fluid">
-        <div>
-          ✍️ <Link href="/blog">Naar het blog</Link>
-        </div>
+        <nav>
+          <ul>
+            <li>
+              <Link href="/blog">✍️ Naar het blog</Link>
+            </li>
+          </ul>
+        </nav>
         <div className="text-right">
           <Link href="/admin">𝜋</Link>
         </div>

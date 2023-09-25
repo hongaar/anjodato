@@ -24,8 +24,8 @@ export function Admin({ params }: { params: { workshop: string } }) {
           <h1>AnJoDaTo</h1>
           <p>Admin</p>
         </hgroup>
-        <Navigation />
       </header>
+      <Navigation />
       <main className="container-fluid">
         <Router base="/admin">
           <Route path="/labels" component={Labels} />
@@ -35,9 +35,16 @@ export function Admin({ params }: { params: { workshop: string } }) {
         </Router>
       </main>
       <footer className="container-fluid">
-        <div>
-          ✍️ <Link href="/blog">Naar het blog</Link>
-        </div>
+        <nav>
+          <ul>
+            <li>
+              <Link href="/blog">✍️ Naar het blog</Link>
+            </li>
+            <li>
+              <Link href="/kaart">🗺️ Naar de kaart</Link>
+            </li>
+          </ul>
+        </nav>
       </footer>
     </AuthProvider>
   );

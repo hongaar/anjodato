@@ -1,26 +1,44 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "../../hooks";
 
 export function Navigation() {
   console.debug("Rendering component Admin/Navigation");
 
   const { login, logout, user } = useAuth();
+  const [location] = useLocation();
+
+  console.log({ location });
 
   return (
     <nav>
       <ul>
-        <li>{user ? user.name : "not logged in"}</li>
-      </ul>
-      <ul>
         <li>
-          <Link href="/admin/labels">Labels</Link>
+          <Link
+            className={location.startsWith("/admin/labels") ? "" : "secondary"}
+            href="/admin/labels"
+          >
+            Labels
+          </Link>
         </li>
         <li>
-          <Link href="/admin/updates">Updates</Link>
+          <Link
+            className={location.startsWith("/admin/updates") ? "" : "secondary"}
+            href="/admin/updates"
+          >
+            Updates
+          </Link>
         </li>
         <li>
-          <Link href="/admin/comments">Comments</Link>
+          <Link
+            className={
+              location.startsWith("/admin/comments") ? "" : "secondary"
+            }
+            href="/admin/comments"
+          >
+            Comments
+          </Link>
         </li>
+        <li>{user ? user.name : "Log in to make edits"}</li>
         <li>
           {user ? (
             <button onClick={logout}>Logout</button>

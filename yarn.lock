@@ -80,6 +80,7 @@ __metadata:
     react-google-places-autocomplete: 4.0.1
     react-helmet: 6.1.0
     react-hot-toast: 2.4.1
+    react-intersection-observer: 9.5.2
     react-nl2br: 1.0.4
     react-photo-album: 2.3.0
     react-scripts: 5.0.1
@@ -15553,6 +15554,15 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 3e337816db574782454bf09c63a8aca546bf9c5be3f83d0494d24bdcfd97ca2db64d4c151c4ab0184d2342d7a7226403e6812e70caf03c8b55a07787bb4ad0f2
+  languageName: node
+  linkType: hard
+
+"react-intersection-observer@npm:9.5.2":
+  version: 9.5.2
+  resolution: "react-intersection-observer@npm:9.5.2"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
+  checksum: cdbe40544930d59fc3820bce017fb688910cbecd7baaf382387a3d60d98a36e1d1e4bc27a876775e99b2a9f86762286a29d7bca21f3345f653cff29850c2641d
   languageName: node
   linkType: hard
 

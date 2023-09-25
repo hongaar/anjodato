@@ -6,6 +6,7 @@ import {
   QuerySnapshot,
   collection,
   doc,
+  getCountFromServer,
   getDocs,
   limit,
   orderBy,
@@ -16,6 +17,7 @@ import {
 import isEqual from "lodash.isequal";
 import { MouseEvent, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useInView } from "react-intersection-observer";
 import { useLocalStorage, useSessionStorage } from "usehooks-ts";
 import { Link } from "wouter";
 import {
@@ -34,7 +36,7 @@ import {
   useFirestore,
 } from "../hooks";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 function getLabelRef(
   firestore: Firestore,
@@ -61,28 +63,39 @@ async function fetchUpdates(
   >,
   labelRef: DocumentReference<Label> | null,
 ) {
-  console.log("Fetching updates", {
+  console.log("Querying updates", {
     sort,
     labelRef,
   });
 
   const updatesRef = collection(firestore, Collection.Updates);
-  const q = query(
+
+  const countQuery = query(
+    updatesRef,
+    ...(labelRef ? [where("label", "==", labelRef)] : []),
+  );
+
+  const updatesQuery = query(
     updatesRef,
     orderBy("date.start", sort),
     limit(PAGE_SIZE),
     ...(labelRef ? [where("label", "==", labelRef)] : []),
     ...(cursor ? [startAfter(cursor)] : []),
   );
-  const querySnapshot = (await getDocs(q)) as QuerySnapshot<
+
+  const querySnapshot = (await getDocs(updatesQuery)) as QuerySnapshot<
     Doc<Collection.Updates>
   >;
+
+  async function getCount() {
+    return (await getCountFromServer(countQuery)).data().count;
+  }
 
   if (querySnapshot.docs.length > 0) {
     setCursor(querySnapshot.docs[querySnapshot.docs.length - 1]);
   }
 
-  return getCollectionData(querySnapshot);
+  return { data: getCollectionData(querySnapshot), getCount };
 }
 
 export function Blog({ params }: { params: { label: string } }) {
@@ -95,6 +108,7 @@ export function Blog({ params }: { params: { label: string } }) {
     DocumentData
   > | null>(null);
   const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", true);
+  const [autoLoadMore, setAutoLoadMore] = useLocalStorage("autoLoadMore", true);
   const [localLabels, setLocalLabels] = useSessionStorage<
     AddId<Label>[] | null
   >("labels", null);
@@ -104,6 +118,14 @@ export function Blog({ params }: { params: { label: string } }) {
   const [updates, setUpdates] = useState<AddIdAndRef<UpdateType>[] | null>(
     null,
   );
+  const [updatesCount, setUpdatesCount] = useState<number | null>(null);
+  const { ref: inViewRef, inView, entry } = useInView();
+
+  useEffect(() => {
+    if (autoLoadMore && inView && entry?.target) {
+      (entry.target as any).click();
+    }
+  }, [entry, inView, autoLoadMore]);
 
   useEffect(() => {
     if (!isEqual(labels, localLabels)) {
@@ -136,9 +158,14 @@ export function Blog({ params }: { params: { label: string } }) {
       null,
       setCursor,
       labelRef,
-    ).then((updates) => {
-      setUpdates(updates);
-    });
+    )
+      .then(({ data, getCount }) => {
+        setUpdates(data);
+        return getCount();
+      })
+      .then((count) => {
+        setUpdatesCount(count);
+      });
   }, [firestore, label, labels, sortDesc]);
 
   async function loadMore(e: MouseEvent<HTMLButtonElement>) {
@@ -155,7 +182,7 @@ export function Blog({ params }: { params: { label: string } }) {
     target.setAttribute("aria-busy", "true");
 
     const labelRef = getLabelRef(firestore, labels, label);
-    const newUpdates = await fetchUpdates(
+    const { data } = await fetchUpdates(
       firestore,
       sortDesc ? "desc" : "asc",
       cursor,
@@ -163,7 +190,7 @@ export function Blog({ params }: { params: { label: string } }) {
       labelRef,
     );
 
-    setUpdates([...updates, ...newUpdates]);
+    setUpdates([...updates, ...data]);
 
     target.setAttribute("aria-busy", "false");
   }
@@ -195,11 +222,17 @@ export function Blog({ params }: { params: { label: string } }) {
             {updates.map((update) => (
               <Update update={update} likes={likes} key={update.id} />
             ))}
-            <p className="text-center">
-              <button className="inline-button" onClick={loadMore}>
-                Meer berichten laden
-              </button>
-            </p>
+            {updatesCount !== null && updatesCount > updates.length ? (
+              <p className="text-center">
+                <button
+                  ref={inViewRef}
+                  className={`inline-button ${autoLoadMore ? "link" : ""}`}
+                  onClick={loadMore}
+                >
+                  Meer berichten laden
+                </button>
+              </p>
+            ) : null}
           </>
         ) : (
           <article>
@@ -218,10 +251,23 @@ export function Blog({ params }: { params: { label: string } }) {
             />
             Nieuwste berichten eerst
           </label>
+          <label>
+            <input
+              type="checkbox"
+              name="sortDesc"
+              checked={autoLoadMore}
+              onChange={(e) => setAutoLoadMore(!autoLoadMore)}
+            />
+            Automatisch meer berichten laden
+          </label>
         </div>
-        <div>
-          🗺️ <Link href="/kaart">Naar de kaart</Link>
-        </div>
+        <nav>
+          <ul>
+            <li>
+              <Link href="/kaart">🗺️ Naar de kaart</Link>
+            </li>
+          </ul>
+        </nav>
         <div className="text-right">
           <Link href="/admin">𝜋</Link>
         </div>

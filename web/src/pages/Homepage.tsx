@@ -26,32 +26,31 @@ export function Homepage() {
           <p>Homepage</p>
         </hgroup>
       </header>
-      <nav className="homepage">
-        <Link href="/blog">
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a role="button">✍️ Blog</a>
-        </Link>
-        <Link href="/kaart">
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a role="button">🗺️ Kaart</a>
-        </Link>
+      <nav>
+        <ul>
+          <li>
+            <Link href="/blog" role="button">
+              ✍️ Blog
+            </Link>
+          </li>
+          <li>
+            <Link href="/kaart" role="button">
+              🗺️ Kaart
+            </Link>
+          </li>
+        </ul>
       </nav>
       <main className="container-fluid homepage">
-        <p className="text-center">Laatste bericht</p>
+        <p className="text-center">Laatste bericht:</p>
         {updates === null ? (
           <article>
-            <p aria-busy="true">Berichten laden...</p>
+            <p aria-busy="true">Laatste bericht laden...</p>
           </article>
         ) : updates.length > 0 ? (
           <>
             {updates.map((update) => (
               <Update update={update} likes={likes} key={update.id} />
             ))}
-            <p className="text-center">
-              <Link role="button" href="/blog">
-                ✍️ Naar het blog
-              </Link>
-            </p>
           </>
         ) : (
           <article>
@@ -60,6 +59,16 @@ export function Homepage() {
         )}
       </main>
       <footer className="container-fluid">
+        <nav>
+          <ul>
+            <li>
+              <Link href="/blog">✍️ Naar het blog</Link>
+            </li>
+            <li>
+              <Link href="/kaart">🗺️ Naar de kaart</Link>
+            </li>
+          </ul>
+        </nav>
         <div className="text-right">
           <Link href="/admin">𝜋</Link>
         </div>

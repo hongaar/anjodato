@@ -134,30 +134,18 @@
 
 // homepage
 
-nav.homepage {
-  a {
-    margin: 0 calc(var(--spacing) * 0.25);
-
-    &:hover {
-      text-decoration: none;
-
-      h2 {
-        text-decoration: underline;
-      }
-    }
-  }
-  h2 {
-    display: inline;
-  }
-}
-
 main.homepage {
   article {
     margin-top: 0;
   }
 }
 
-// labels
+// nav
+
+nav {
+  padding: var(--block-spacing-vertical) 0;
+  justify-content: center;
+}
 
 nav.labels {
   &.truncate > a.label {
@@ -285,11 +273,6 @@ button.link {
   > footer {
     text-align: center;
   }
-}
-
-#root > nav {
-  padding: var(--block-spacing-vertical) 0;
-  justify-content: center;
 }
 
 #root > header,
