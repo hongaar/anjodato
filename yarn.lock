@@ -64,6 +64,7 @@ __metadata:
     "@types/gapi.client.photoslibrary": 1.0.0
     "@types/google.accounts": 0.0.9
     "@types/jest": ^29.5.5
+    "@types/lodash.isequal": ^4
     "@types/node": ^20.6.2
     "@types/randomcolor": ^0.5.7
     "@types/react": ^18.2.21
@@ -71,6 +72,7 @@ __metadata:
     "@types/react-helmet": ^6
     date-fns: 2.30.0
     firebase: ^10.4.0
+    lodash.isequal: 4.5.0
     randomcolor: ^0.6.2
     react: ^18.2.0
     react-dom: ^18.2.0
@@ -4114,6 +4116,22 @@ __metadata:
   version: 3.0.3
   resolution: "@types/linkify-it@npm:3.0.3"
   checksum: a734becc4e7476833b0e6951ec133c006a34809639c722d3e28b7cf88f5f6ccbb433f195788be5e56209b1e9e6e0778879291dd2db401acee3bb585c44dcc329
+  languageName: node
+  linkType: hard
+
+"@types/lodash.isequal@npm:^4":
+  version: 4.5.6
+  resolution: "@types/lodash.isequal@npm:4.5.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 0f065989408a9e0584e6c27495be2cd4602e62650f55266aa195812582444463c0c8570c674ae84f947c11748f49ab43fd5b482fa120e08eeee4c23b162edc38
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.199
+  resolution: "@types/lodash@npm:4.14.199"
+  checksum: e68d1fcbbfce953ed87b296a628573f62939227bcda0c934954e862b421e8a34c5e71cad6fea27b9980567909e6a4698f09025692958e36d64ea9ed99ec6fb2e
   languageName: node
   linkType: hard
 
@@ -12431,6 +12449,13 @@ __metadata:
   version: 3.0.3
   resolution: "lodash.isboolean@npm:3.0.3"
   checksum: b70068b4a8b8837912b54052557b21fc4774174e3512ed3c5b94621e5aff5eb6c68089d0a386b7e801d679cd105d2e35417978a5e99071750aa2ed90bffd0250
+  languageName: node
+  linkType: hard
+
+"lodash.isequal@npm:4.5.0":
+  version: 4.5.0
+  resolution: "lodash.isequal@npm:4.5.0"
+  checksum: da27515dc5230eb1140ba65ff8de3613649620e8656b19a6270afe4866b7bd461d9ba2ac8a48dcc57f7adac4ee80e1de9f965d89d4d81a0ad52bb3eec2609644
   languageName: node
   linkType: hard
 

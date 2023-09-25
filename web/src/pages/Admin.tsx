@@ -36,7 +36,7 @@ export function Admin({ params }: { params: { workshop: string } }) {
       </main>
       <footer className="container-fluid">
         <div>
-          ➡️ <Link href="/">Naar het blog</Link>
+          ✍️ <Link href="/blog">Naar het blog</Link>
         </div>
       </footer>
     </AuthProvider>

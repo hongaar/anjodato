@@ -36,7 +36,7 @@ type CollectionPath =
 
 const USE_EMULATOR = false;
 
-function useFirestore() {
+export function useFirestore() {
   const firebase = useFirebase();
   const firestore = useMemo(() => {
     const db = getFirestore(firebase.app);
@@ -122,15 +122,17 @@ export function useCollectionOnce<R extends CollectionPath>(
     Doc<LastElementOf<R>>
   >(ref as any);
 
-  if (error) {
-    console.error(error);
-  }
+  return useMemo(() => {
+    if (error) {
+      console.error(error);
+    }
 
-  if (loading || !snapshot) {
-    return [null] as const;
-  }
+    if (loading || !snapshot) {
+      return [null] as const;
+    }
 
-  return [getCollectionData(snapshot), reload] as const;
+    return [getCollectionData(snapshot), reload] as const;
+  }, [error, loading, reload, snapshot]);
 }
 
 export function useQuery<R extends CollectionPath>(
@@ -151,6 +153,26 @@ export function useQuery<R extends CollectionPath>(
   }
 
   return getCollectionData(snapshot);
+}
+
+export function useQueryOnce<R extends CollectionPath>(
+  collectionRef: R,
+  ...queryConstraints: QueryConstraint[]
+) {
+  const ref = useCollectionRef(...collectionRef);
+  const [snapshot, loading, error, reload] = useBaseCollectionOnce<
+    Doc<LastElementOf<R>>
+  >(query(ref as any, ...queryConstraints));
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (loading || !snapshot) {
+    return [null] as const;
+  }
+
+  return [getCollectionData(snapshot), reload] as const;
 }
 
 export function useDocument<T extends Collection>(
@@ -211,7 +233,9 @@ export function useDocDeleter<R extends CollectionPath>(...collectionRef: R) {
   );
 }
 
-function getCollectionData<T extends DocumentData>(snapshot: QuerySnapshot<T>) {
+export function getCollectionData<T extends DocumentData>(
+  snapshot: QuerySnapshot<T>,
+) {
   const data: AddIdAndRef<T>[] = [];
   snapshot.forEach(function (doc) {
     data.push({ id: doc.id, _ref: doc.ref, ...parseDocData(doc.data()) });

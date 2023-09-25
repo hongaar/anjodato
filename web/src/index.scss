@@ -422,6 +422,11 @@ button[type="submit"] {
   font-family: "Noto Color Emoji", sans-serif;
 }
 
+.inline-button {
+  display: inline;
+  width: unset;
+}
+
 .label {
   display: inline-block;
   padding: 0.375rem 0.5rem;
