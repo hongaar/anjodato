@@ -188,7 +188,7 @@ export function Photos({ map, items, likes }: Props) {
 
     if (map) {
       photos.unshift({
-        key: "googlemaps",
+        key: `googlemaps/${map}`,
         src: getMapsUrl(map, 640, 2, isDarkMode),
         width: 1280,
         height: 960,
