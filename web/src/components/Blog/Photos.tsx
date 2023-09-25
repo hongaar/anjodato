@@ -69,7 +69,7 @@ function getMapsUrl(location: string, width = 640, scale = 2, dark = false) {
 }
 
 function renderCounter(counter?: number) {
-  return counter ? "!".repeat(counter) : "";
+  return counter ? "❤️".repeat(counter) : "";
 }
 
 function SlideLikeButton() {
@@ -96,21 +96,26 @@ function SlideLikeButton() {
     });
 
     target.setAttribute("aria-busy", "false");
+    target.blur();
   }
 
   return (
     <button
       onClick={addLike}
       type="button"
-      className="yarl__button"
+      className="yarl__button likes"
       aria-busy={likes === null ? "true" : "false"}
     >
       {likes === null ? (
         ""
       ) : (
         <>
-          <span className="icon">❤️</span> Mooi hoor{" "}
-          {renderCounter(currentLike?.counter)}
+          {currentLike?.counter ? (
+            <span className="current-likes">
+              {renderCounter(currentLike?.counter)}
+            </span>
+          ) : null}
+          <span className="add-like">❤️</span> Mooi hoor
         </>
       )}
     </button>
@@ -231,15 +236,19 @@ export function Photos({ map, items, likes }: Props) {
               <button
                 onClick={(e) => addLike(e, photo.key, currentLike)}
                 type="button"
-                className="like"
+                className="likes"
                 aria-busy={likes === null ? "true" : "false"}
               >
                 {likes === null ? (
                   ""
                 ) : (
                   <>
-                    <span className="icon">❤️</span>{" "}
-                    {renderCounter(currentLike?.counter)}
+                    {currentLike?.counter ? (
+                      <span className="current-likes">
+                        {renderCounter(currentLike?.counter)}
+                      </span>
+                    ) : null}
+                    <span className="add-like">❤️</span>
                   </>
                 )}
               </button>

@@ -28,13 +28,42 @@
   }
 }
 
+// likes
+
+.likes {
+  background-color: transparent;
+  color: white;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
+  box-shadow: none;
+
+  border: none;
+  outline: none;
+
+  .current-likes {
+    letter-spacing: -1em;
+    white-space: nowrap;
+  }
+
+  .add-like {
+    display: inline-block;
+    will-change: transform;
+    transition: transform 0.25s ease-in-out;
+  }
+
+  &:hover {
+    .add-like {
+      transform: scale(1.3);
+    }
+  }
+}
+
 // photo album
 
 .react-photo-album--row {
   > span {
     position: relative;
 
-    .like {
+    .likes {
       position: absolute;
       bottom: 0;
       right: 0;
@@ -44,39 +73,43 @@
       padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
       margin: 0;
 
-      background-color: transparent;
-      color: white;
-      text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.8);
-      box-shadow: none;
-
       border: none;
       outline: none;
 
-      opacity: 0;
-      transition: opacity 0.25s ease-in-out;
-      will-change: opacity, scale;
+      .current-likes {
+        position: relative;
+        left: 0.3em;
+        will-change: left;
+        transition: left 0.25s ease-in-out;
+      }
 
-      .icon {
-        display: inline-block;
-        will-change: transform;
-        transition: transform 0.25s ease-in-out;
+      .add-like {
+        opacity: 0;
+        will-change: transform, opacity;
+        transition:
+          transform 0.25s ease-in-out,
+          opacity 0.25s ease-in-out;
       }
 
       &:hover {
-        .icon {
-          transform: scale(1.3);
+        .add-like {
+          opacity: 1;
         }
       }
 
       @media (min-width: 576px) and (hover: hover) {
         & {
-          display: inline-block;
+          display: inline-flex;
         }
       }
     }
 
-    &:hover {
-      .like {
+    &:hover .likes {
+      .current-likes {
+        left: 0;
+      }
+
+      .add-like {
         opacity: 1;
       }
     }
@@ -97,18 +130,6 @@
     position: absolute;
     left: -1em;
     top: calc(50% - 0.5em);
-  }
-
-  .icon {
-    display: inline-block;
-    will-change: transform;
-    transition: transform 0.25s ease-in-out;
-  }
-
-  &:hover {
-    .icon {
-      transform: scale(1.3);
-    }
   }
 }
 
