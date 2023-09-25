@@ -7,8 +7,6 @@ export function Navigation() {
   const { login, logout, user } = useAuth();
   const [location] = useLocation();
 
-  console.log({ location });
-
   return (
     <nav>
       <ul>

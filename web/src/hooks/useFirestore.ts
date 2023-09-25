@@ -164,15 +164,17 @@ export function useQueryOnce<R extends CollectionPath>(
     Doc<LastElementOf<R>>
   >(query(ref as any, ...queryConstraints));
 
-  if (error) {
-    console.error(error);
-  }
+  return useMemo(() => {
+    if (error) {
+      console.error(error);
+    }
 
-  if (loading || !snapshot) {
-    return [null] as const;
-  }
+    if (loading || !snapshot) {
+      return [null] as const;
+    }
 
-  return [getCollectionData(snapshot), reload] as const;
+    return [getCollectionData(snapshot), reload] as const;
+  }, [error, loading, reload, snapshot]);
 }
 
 export function useDocument<T extends Collection>(

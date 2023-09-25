@@ -1,5 +1,8 @@
 import { FormEvent, MouseEvent, useEffect, useState } from "react";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import GooglePlacesAutocomplete, {
+  geocodeByPlaceId,
+  getLatLng,
+} from "react-google-places-autocomplete";
 import { useSessionStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
 import { useLocation } from "wouter";
@@ -129,6 +132,10 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
         name: data.get("geo.name") as string,
         country: data.get("geo.country") as string,
         place_id: data.get("geo.place_id") as string,
+        position: {
+          lat: Number(data.get("geo.position.lat") as string),
+          lng: Number(data.get("geo.position.lng") as string),
+        },
       },
       description: {
         title: data.get("description.title") as string,
@@ -162,6 +169,19 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
   }
 
   function setGeo(value: PlaceResult) {
+    geocodeByPlaceId(value.value.place_id)
+      .then((results) => getLatLng(results[0]))
+      .then(({ lat, lng }) => {
+        console.log({ lat, lng });
+
+        document
+          .querySelector("input[name=geo\\.position\\.lat]")
+          ?.setAttribute("value", String(lat));
+        document
+          .querySelector("input[name=geo\\.position\\.lng]")
+          ?.setAttribute("value", String(lng));
+      });
+
     document
       .querySelector("input[name=geo\\.name]")
       ?.setAttribute("value", value.value.structured_formatting.main_text);
@@ -174,6 +194,7 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
     document
       .querySelector("input[name=geo\\.place_id]")
       ?.setAttribute("value", value.value.place_id);
+
     setGeoValue(value);
   }
 
@@ -234,9 +255,19 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
               Country:
               <input name="geo.country" required type="text" />
             </label>
+          </div>
+          <div className="grid">
             <label>
               Place ID:
               <input name="geo.place_id" required type="text" />
+            </label>
+            <label>
+              Lat:
+              <input name="geo.position.lat" required type="text" />
+            </label>
+            <label>
+              Lng:
+              <input name="geo.position.lng" required type="text" />
             </label>
           </div>
         </fieldset>

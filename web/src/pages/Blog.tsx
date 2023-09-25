@@ -66,6 +66,7 @@ async function fetchUpdates(
   console.log("Querying updates", {
     sort,
     labelRef,
+    cursor: cursor ? cursor.ref.path : null,
   });
 
   const updatesRef = collection(firestore, Collection.Updates);

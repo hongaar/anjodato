@@ -51,6 +51,7 @@ export type Update = {
     name: string;
     country: string;
     place_id: string;
+    position?: { lat: number; lng: number };
   };
   description: {
     title: string | null;

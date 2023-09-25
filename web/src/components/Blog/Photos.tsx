@@ -11,7 +11,13 @@ import Lightbox, {
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import "yet-another-react-lightbox/styles.css";
-import { AddIdAndRef, Collection, GOOGLE_API_KEY, Like } from "../../api";
+import {
+  AddIdAndRef,
+  Collection,
+  GOOGLE_API_KEY,
+  Like,
+  Update,
+} from "../../api";
 import { useDocWriter } from "../../hooks";
 
 declare module "yet-another-react-lightbox" {
@@ -26,7 +32,7 @@ type Props = {
     width: number;
     height: number;
   }[];
-  map?: string;
+  location: Update["location"];
   likes: AddIdAndRef<Like>[] | null;
 };
 
@@ -130,7 +136,7 @@ export function LikePlugin({ augment, contains, addParent }: PluginProps) {
   }));
 }
 
-export function Photos({ map, items, likes }: Props) {
+export function Photos({ location, items, likes }: Props) {
   console.debug("Rendering component Blog/Photos");
 
   const [index, setIndex] = useState(-1);
@@ -186,29 +192,31 @@ export function Photos({ map, items, likes }: Props) {
       };
     });
 
-    if (map) {
-      photos.unshift({
-        key: `googlemaps/${map}`,
-        src: getMapsUrl(map, 640, 2, isDarkMode),
-        width: 1280,
-        height: 960,
-        srcSet: [
-          {
-            src: getMapsUrl(map, 640, 2, isDarkMode),
-            width: 1280,
-            height: 960,
-          },
-          {
-            src: getMapsUrl(map, 400, 1, isDarkMode),
-            width: 800,
-            height: 600,
-          },
-        ],
-      });
-    }
+    const locationName = `${location.name}, ${location.country}`;
+    const locationPosition = location.position
+      ? `${location.position.lat},${location.position.lng}`
+      : locationName;
+    photos.unshift({
+      key: `googlemaps/${locationName}`,
+      src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
+      width: 1280,
+      height: 960,
+      srcSet: [
+        {
+          src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
+          width: 1280,
+          height: 960,
+        },
+        {
+          src: getMapsUrl(locationPosition, 400, 1, isDarkMode),
+          width: 800,
+          height: 600,
+        },
+      ],
+    });
 
     return photos;
-  }, [items, map, isDarkMode]);
+  }, [items, location, isDarkMode]);
 
   if (items.length === 0) {
     return null;

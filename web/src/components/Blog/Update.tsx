@@ -23,7 +23,7 @@ export function Update({ update, likes }: Props) {
       <Body text={update.description.body} />
       <Photos
         items={update.photos.items}
-        map={`${update.location.name}, ${update.location.country}`}
+        location={update.location}
         likes={likes}
       />
       <Footer updateId={update.id} />
