@@ -17,13 +17,15 @@ const loader = new Loader({
 });
 
 async function initMap(
+  maps: google.maps.MapsLibrary,
+  marker: google.maps.MarkerLibrary,
   updates: AddIdAndRef<UpdateDoc>[],
   setActiveUpdate: Dispatch<
     React.SetStateAction<AddIdAndRef<UpdateDoc> | null>
   >,
 ) {
-  const { Map } = await loader.importLibrary("maps");
-  const { AdvancedMarkerElement } = await loader.importLibrary("marker");
+  const { Map } = maps;
+  const { AdvancedMarkerElement } = marker;
 
   const map = new Map(document.getElementById("map") as HTMLElement, {
     zoom: 3,
@@ -32,7 +34,7 @@ async function initMap(
 
     // gestureHandling: "greedy",
 
-    zoomControl: true,
+    zoomControl: false,
     mapTypeControl: false,
     scaleControl: false,
     streetViewControl: false,
@@ -41,63 +43,106 @@ async function initMap(
   });
 
   const pins: HTMLDivElement[] = [];
-  updates.forEach((update, i) => {
-    if (update.location.position) {
+
+  const markers = updates.reduce(
+    (markers, update, index) => {
+      if (update.location.position) {
+        const positionStr = `${update.location.position.lat},${update.location.position.lng}`;
+
+        if (positionStr in markers) {
+          markers[positionStr].updates.push({ index, update });
+        } else {
+          markers[positionStr] = {
+            position: update.location.position,
+            updates: [{ index, update }],
+          };
+        }
+      }
+
+      return markers;
+    },
+    {} as Record<
+      string,
+      {
+        position: { lat: number; lng: number };
+        updates: { index: number; update: AddIdAndRef<UpdateDoc> }[];
+      }
+    >,
+  );
+
+  Object.values(markers).forEach(({ position, updates: markerUpdates }) => {
+    const pinWrapper = document.createElement("div");
+    pinWrapper.className = "update-location-wrapper";
+
+    markerUpdates.forEach(({ index, update }) => {
       const pin = document.createElement("div");
       pin.className = "update-location";
-      pin.textContent = `${i + 1}`;
+      pin.textContent = `${index + 1}`;
+      pin.setAttribute(
+        "data-tooltip",
+        update.description.title
+          ? update.description.title
+          : `${update.location.name}, ${update.location.country}`,
+      );
+      pin.setAttribute("data-update-id", update.id);
       pins.push(pin);
+      pinWrapper.appendChild(pin);
+    });
 
-      const marker = new AdvancedMarkerElement({
-        position: update.location.position,
-        map,
-        title: `${i + 1}. ${
-          update.description.title
-            ? update.description.title
-            : `${update.location.name}, ${update.location.country}`
-        }`,
-        content: pin,
+    const markerElement = new AdvancedMarkerElement({
+      zIndex: 2,
+      position,
+      map,
+      content: pinWrapper,
+    });
+
+    // Add a click listener for each marker, and set up the info window.
+    markerElement.addListener("click", ({ domEvent, latLng }: any) => {
+      pins.forEach((pin) => {
+        pin.classList.remove("active");
       });
+      const target = domEvent.target as HTMLDivElement;
+      const updateId = target.getAttribute("data-update-id");
 
-      // Add a click listener for each marker, and set up the info window.
-      marker.addListener("click", ({ domEvent, latLng }: any) => {
-        pins.forEach((pin) => {
-          pin.classList.remove("active");
-        });
+      const update = updates.find((update) => update.id === updateId);
 
-        setActiveUpdate((previousUpdate) => {
-          if (previousUpdate === update) {
-            return null;
-          }
+      if (!update) {
+        console.warn("Could not find update for pin", target);
+        return;
+      }
 
-          pin.classList.add("active");
+      setActiveUpdate((previousUpdate) => {
+        if (previousUpdate === update) {
+          return null;
+        }
 
-          if (document.documentElement.clientWidth > 992) {
-            setTimeout(
-              () =>
-                window.scrollTo({
-                  top: 0,
-                  left: 0,
-                  behavior: "smooth",
-                }),
-              100,
-            );
-          } else {
-            setTimeout(
-              () =>
-                window.scrollTo({
-                  top: 200,
-                  left: 0,
-                  behavior: "smooth",
-                }),
-              100,
-            );
-          }
+        target.classList.add("active");
 
-          return update;
-        });
+        if (document.documentElement.clientWidth > 992) {
+          setTimeout(
+            () =>
+              window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+              }),
+            100,
+          );
+        } else {
+          setTimeout(
+            () =>
+              window.scrollTo({
+                top: 200,
+                left: 0,
+                behavior: "smooth",
+              }),
+            100,
+          );
+        }
+
+        return update;
       });
-    }
+    });
   });
 }
 
@@ -111,34 +156,37 @@ export function Map() {
   const likes = useCollection(Collection.Likes);
   const [activeUpdate, setActiveUpdate] =
     useState<AddIdAndRef<UpdateDoc> | null>(null);
+  const [maps, setMaps] = useState<google.maps.MapsLibrary | null>(null);
+  const [marker, setMarker] = useState<google.maps.MarkerLibrary | null>(null);
 
   useEffect(() => {
-    console.log("Rendering map");
-    if (updates !== null && updates.length > 0) {
-      initMap(updates, setActiveUpdate);
+    console.log("Loading maps library");
+    loader.importLibrary("maps").then(setMaps);
+    loader.importLibrary("marker").then(setMarker);
+  }, []);
+
+  useEffect(() => {
+    if (maps && marker && updates !== null && updates.length > 0) {
+      initMap(maps, marker, updates, setActiveUpdate);
     }
-  }, [updates]);
+  }, [maps, marker, updates]);
 
   return (
     <>
       <Helmet>
         <title>Kaart</title>
       </Helmet>
-      <header className="sticky">
-        <hgroup>
-          <Link href="/">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <h1>AnJoDaTo</h1>
-            </a>
-          </Link>
-        </hgroup>
-      </header>
+
+      <nav className="sticky">
+        <Link role="button" href="/">
+          ✍️ Blog
+        </Link>
+      </nav>
       <main className="container-fluid map">
         <div className="grid">
           {updates === null ? (
             <article>
-              <p aria-busy="true">Berichten laden...</p>
+              <p aria-busy="true">Kaart laden...</p>
             </article>
           ) : updates.length > 0 ? (
             <div id="map" />

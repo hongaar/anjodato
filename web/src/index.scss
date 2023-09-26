@@ -132,32 +132,21 @@
   }
 }
 
-// homepage
+// sticky nav
 
-main.homepage {
-  article {
-    margin-top: 0;
+#root > nav.sticky {
+  position: fixed;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0;
+  z-index: 4;
+
+  > a {
+    margin: 0;
   }
 }
 
 // map
-
-#root > header.sticky {
-  position: fixed;
-  left: 0.5rem;
-  top: 0.5rem;
-  z-index: 2;
-
-  display: inline-block;
-  width: unset;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: calc(var(--spacing) * 0.25) calc(var(--spacing) * 0.5);
-  border-radius: var(--border-radius);
-
-  h1 {
-    font-size: 1rem;
-  }
-}
 
 #root > main.map {
   padding: 0;
@@ -178,15 +167,35 @@ main.homepage {
   position: sticky !important;
   top: 0;
 
+  .update-location-wrapper {
+    display: flex;
+  }
+
   .update-location {
-    width: 1.5rem;
-    height: 1.5rem;
-    background-color: black;
-    color: white;
-    border-radius: 50%;
-    font-size: 0.7rem;
-    line-height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--tooltip-background-color);
+    color: var(--tooltip-color);
+    font-size: 1rem;
+    line-height: 2rem;
     text-align: center;
+    border-right: 1px solid white;
+    cursor: pointer;
+
+    &:first-child {
+      border-top-left-radius: 50%;
+      border-bottom-left-radius: 50%;
+    }
+
+    &:last-child {
+      border-top-right-radius: 50%;
+      border-bottom-right-radius: 50%;
+      border: none;
+    }
+
+    &:hover {
+      background-color: var(--secondary-hover);
+    }
 
     &.active {
       background-color: var(--primary);
@@ -198,6 +207,10 @@ main.homepage {
     border: unset;
     outline: unset;
     --box-shadow: none !important;
+
+    &:hover {
+      z-index: 3 !important;
+    }
   }
 
   + article {

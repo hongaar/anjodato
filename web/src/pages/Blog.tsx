@@ -203,15 +203,15 @@ export function Blog({ params }: { params: { label: string } }) {
       </Helmet>
       <header className="container-fluid">
         <hgroup>
-          <Link href="/">
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <h1>AnJoDaTo</h1>
-            </a>
-          </Link>
+          <h1>AnJoDaTo</h1>
           <p>Blog{label ? ` / ${label}` : null}</p>
         </hgroup>
       </header>
+      <nav className="sticky">
+        <Link role="button" href="/kaart">
+          🗺️ Kaart
+        </Link>
+      </nav>
       <Labels labels={localLabels} activeName={label} />
       <main className="container-fluid">
         {localLabels === null ? null : updates === null ? (
@@ -262,14 +262,7 @@ export function Blog({ params }: { params: { label: string } }) {
             Automatisch meer berichten laden
           </label>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <Link href="/kaart">🗺️ Naar de kaart</Link>
-            </li>
-          </ul>
-        </nav>
-        <div className="text-right">
+        <div>
           <Link href="/admin">𝜋</Link>
         </div>
       </footer>
