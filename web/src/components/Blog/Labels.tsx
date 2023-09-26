@@ -32,7 +32,7 @@ export function Labels({ labels, activeName }: Props) {
     >
       {labels.map((label) => (
         <Link
-          href={activeName === label.name ? "/blog" : `/blog/${label.name}`}
+          href={activeName === label.name ? "/" : `/${label.name}`}
           className="label"
           aria-current={activeName === label.name ? "page" : undefined}
           key={label.id}

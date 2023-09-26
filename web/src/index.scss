@@ -150,15 +150,6 @@
 
 #root > main.map {
   padding: 0;
-
-  article {
-    z-index: 1;
-    margin: var(--grid-spacing-horizontal);
-
-    @media (min-width: 992px) {
-      margin-left: 0;
-    }
-  }
 }
 
 #map {
@@ -214,8 +205,12 @@
   }
 
   + article {
-    margin-top: 0;
-    margin-bottom: 0;
+    z-index: 1;
+    margin: var(--grid-spacing-horizontal);
+
+    @media (min-width: 992px) {
+      margin-left: 0;
+    }
   }
 }
 
