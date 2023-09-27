@@ -191,6 +191,15 @@
     &.active {
       background-color: var(--primary);
     }
+
+    &::before {
+      background-color: hsl(205, 30%, 15%);
+      color: #fff;
+    }
+
+    &::after {
+      color: hsl(205, 30%, 15%);
+    }
   }
 
   [role="button"] {
@@ -292,6 +301,35 @@ button.link {
   background-color: var(--background-color);
 }
 
+// permalink
+
+header {
+  position: relative;
+
+  .permalink {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+
+    --color: var(--muted-color);
+    --font-size: 0.875em;
+
+    color: var(--color);
+    font-size: var(--font-size);
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  &:hover .permalink {
+    opacity: 1;
+  }
+}
+
 // layout
 
 .container-fluid {
@@ -386,21 +424,21 @@ hgroup {
   }
 }
 
-article footer {
-  ol {
-    list-style: none;
-    padding: 0;
+ol.comments {
+  list-style: none;
+  padding: 0;
 
-    li {
-      margin-bottom: calc(var(--typography-spacing-vertical) * 1);
-    }
-
-    small {
-      --color: var(--muted-color);
-      color: var(--color);
-    }
+  li {
+    margin-bottom: calc(var(--typography-spacing-vertical) * 1);
   }
 
+  small {
+    --color: var(--muted-color);
+    color: var(--color);
+  }
+}
+
+article footer {
   form {
     position: sticky;
     top: calc(var(--typography-spacing-vertical) * 1);

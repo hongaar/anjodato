@@ -79,7 +79,7 @@ export function Footer({ updateId }: Props) {
           {comments === null ? (
             <p aria-busy="true">Aan het laden...</p>
           ) : comments.length > 0 ? (
-            <ol>
+            <ol className="comments">
               {comments
                 .sort((a, b) => (a.date > b.date ? 1 : -1))
                 .map((comment) => (

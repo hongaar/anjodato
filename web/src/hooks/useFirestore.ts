@@ -1,11 +1,13 @@
 import {
   collection,
   collectionGroup,
+  CollectionReference,
   connectFirestoreEmulator,
   deleteDoc,
   doc,
   DocumentData,
   getFirestore,
+  Query,
   query,
   QueryConstraint,
   QuerySnapshot,
@@ -80,11 +82,10 @@ export function useDocRef(collectionId: Collection, docId: string) {
   );
 }
 
-export function useCollection<R extends CollectionPath>(...path: R) {
-  const collectionRef = useCollectionRef(...path);
-  const [snapshot, loading, error] = useBaseCollection<Doc<LastElementOf<R>>>(
-    collectionRef as any,
-  );
+export function useCollectionDataFromRef<T extends DocumentData>(
+  ref: CollectionReference | Query,
+) {
+  const [snapshot, loading, error] = useBaseCollection<T>(ref as any);
 
   if (error) {
     console.error(error);
@@ -97,30 +98,78 @@ export function useCollection<R extends CollectionPath>(...path: R) {
   return getCollectionData(snapshot);
 }
 
-export function useCollectionGroup<T extends Collection>(collectionId: T) {
-  const collectionRef = useCollectionGroupRef(collectionId);
-  const [snapshot, loading, error] = useBaseCollection<Doc<T>>(
-    collectionRef as any,
+export function useCollectionDataOnceFromRef<T extends DocumentData>(
+  ref: CollectionReference | Query,
+) {
+  const [snapshot, loading, error, reload] = useBaseCollectionOnce<T>(
+    ref as any,
   );
 
-  if (error) {
-    console.error(error);
-  }
+  return useMemo(() => {
+    if (error) {
+      console.error(error);
+    }
 
-  if (loading || !snapshot) {
-    return null;
-  }
+    if (loading || !snapshot) {
+      return [null] as const;
+    }
 
-  return getCollectionData(snapshot);
+    return [getCollectionData(snapshot), reload] as const;
+  }, [error, loading, reload, snapshot]);
+}
+
+export function useCollection<R extends CollectionPath>(...path: R) {
+  const collectionRef = useCollectionRef(...path);
+
+  return useCollectionDataFromRef<Doc<LastElementOf<R>>>(collectionRef);
 }
 
 export function useCollectionOnce<R extends CollectionPath>(
   ...collectionRef: R
 ) {
   const ref = useCollectionRef(...collectionRef);
-  const [snapshot, loading, error, reload] = useBaseCollectionOnce<
-    Doc<LastElementOf<R>>
-  >(ref as any);
+
+  return useCollectionDataOnceFromRef<Doc<LastElementOf<R>>>(ref);
+}
+
+export function useCollectionGroup<T extends Collection>(collectionId: T) {
+  const ref = useCollectionGroupRef(collectionId);
+
+  return useCollectionDataFromRef<Doc<T>>(ref);
+}
+
+export function useCollectionGroupOnce<T extends Collection>(collectionId: T) {
+  const ref = useCollectionGroupRef(collectionId);
+
+  return useCollectionDataOnceFromRef<Doc<T>>(ref);
+}
+
+export function useQueryFromRef<T extends DocumentData>(
+  ref: Query,
+  ...queryConstraints: QueryConstraint[]
+) {
+  const [snapshot, loading, error] = useBaseCollection<T>(
+    query(ref as any, ...queryConstraints),
+  );
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (loading || !snapshot) {
+    return [];
+  }
+
+  return getCollectionData(snapshot);
+}
+
+export function useQueryOnceFromRef<T extends DocumentData>(
+  ref: Query,
+  ...queryConstraints: QueryConstraint[]
+) {
+  const [snapshot, loading, error, reload] = useBaseCollectionOnce<T>(
+    query(ref as any, ...queryConstraints),
+  );
 
   return useMemo(() => {
     if (error) {
@@ -140,19 +189,8 @@ export function useQuery<R extends CollectionPath>(
   ...queryConstraints: QueryConstraint[]
 ) {
   const ref = useCollectionRef(...collectionRef);
-  const [snapshot, loading, error] = useBaseCollection<Doc<LastElementOf<R>>>(
-    query(ref as any, ...queryConstraints),
-  );
 
-  if (error) {
-    console.error(error);
-  }
-
-  if (loading || !snapshot) {
-    return [];
-  }
-
-  return getCollectionData(snapshot);
+  return useQueryFromRef<Doc<LastElementOf<R>>>(ref, ...queryConstraints);
 }
 
 export function useQueryOnce<R extends CollectionPath>(
@@ -160,21 +198,8 @@ export function useQueryOnce<R extends CollectionPath>(
   ...queryConstraints: QueryConstraint[]
 ) {
   const ref = useCollectionRef(...collectionRef);
-  const [snapshot, loading, error, reload] = useBaseCollectionOnce<
-    Doc<LastElementOf<R>>
-  >(query(ref as any, ...queryConstraints));
 
-  return useMemo(() => {
-    if (error) {
-      console.error(error);
-    }
-
-    if (loading || !snapshot) {
-      return [null] as const;
-    }
-
-    return [getCollectionData(snapshot), reload] as const;
-  }, [error, loading, reload, snapshot]);
+  return useQueryOnceFromRef<Doc<LastElementOf<R>>>(ref, ...queryConstraints);
 }
 
 export function useDocument<T extends Collection>(
@@ -188,8 +213,12 @@ export function useDocument<T extends Collection>(
     console.error(error);
   }
 
-  if (loading || !data) {
+  if (loading) {
     return null;
+  }
+
+  if (!data) {
+    return;
   }
 
   return parseDocData(data);
@@ -206,8 +235,12 @@ export function useDocumentOnce<T extends Collection>(
     console.error(error);
   }
 
-  if (loading || !data) {
+  if (loading) {
     return null;
+  }
+
+  if (!data) {
+    return;
   }
 
   return parseDocData(data);

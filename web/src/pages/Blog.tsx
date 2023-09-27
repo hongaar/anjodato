@@ -28,6 +28,7 @@ import {
   Label,
   Update as UpdateType,
 } from "../api";
+import { Nav } from "../components";
 import { Labels, Update } from "../components/Blog";
 import {
   getCollectionData,
@@ -225,15 +226,26 @@ export function Blog({ params }: { params: { label: string } }) {
               <Update update={update} likes={likes} key={update.id} />
             ))}
             {updatesCount !== null && updatesCount > updates.length ? (
-              <p className="text-center">
-                <button
-                  ref={inViewRef}
-                  className={`inline-button ${autoLoadMore ? "link" : ""}`}
-                  onClick={loadMore}
-                >
-                  Meer berichten laden
-                </button>
-              </p>
+              <>
+                {autoLoadMore ? null : (
+                  <p className="text-center">
+                    {updatesCount - updates.length === 1
+                      ? `Er is nog 1 ${sortDesc ? "ouder" : "nieuwer"} bericht.`
+                      : `Er zijn nog ${updatesCount - updates.length} ${
+                          sortDesc ? "oudere" : "nieuwere"
+                        } berichten.`}
+                  </p>
+                )}
+                <p className="text-center">
+                  <button
+                    ref={inViewRef}
+                    className={`inline-button ${autoLoadMore ? "link" : ""}`}
+                    onClick={loadMore}
+                  >
+                    Meer berichten laden
+                  </button>
+                </p>
+              </>
             ) : null}
           </>
         ) : (
@@ -263,9 +275,7 @@ export function Blog({ params }: { params: { label: string } }) {
             Automatisch meer berichten laden
           </label>
         </div>
-        <div>
-          <Link href="/admin">𝜋</Link>
-        </div>
+        <Nav />
       </footer>
     </>
   );

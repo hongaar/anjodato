@@ -1,6 +1,7 @@
 import { Helmet } from "react-helmet";
 import { Toaster } from "react-hot-toast";
-import { Link, Route, Router } from "wouter";
+import { Route, Router } from "wouter";
+import { Nav } from "../components";
 import {
   Comments,
   Labels,
@@ -35,19 +36,7 @@ export function Admin({ params }: { params: { workshop: string } }) {
         </Router>
       </main>
       <footer className="container-fluid">
-        <nav>
-          <ul>
-            <li>
-              <Link href="/">✍️ Naar het blog</Link>
-            </li>
-            <li>
-              <Link href="/kaart">🗺️ Naar de kaart</Link>
-            </li>
-            <li>
-              <Link href="/populair">❤️ Populaire foto's</Link>
-            </li>
-          </ul>
-        </nav>
+        <Nav />
       </footer>
     </AuthProvider>
   );

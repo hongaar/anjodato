@@ -1,11 +1,11 @@
-import { AddIdAndRef, Like, Update as UpdateDoc } from "../../api";
+import { AddId, AddIdAndRef, Like, Update as UpdateDoc } from "../../api";
 import { Body } from "./Body";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { Photos } from "./Photos";
 
 type Props = {
-  update: AddIdAndRef<UpdateDoc>;
+  update: AddId<UpdateDoc>;
   likes: AddIdAndRef<Like>[] | null;
 };
 
@@ -13,10 +13,13 @@ export function Update({ update, likes }: Props) {
   return (
     <article key={update.id}>
       <Header
+        id={update.id}
         title={update.description.title}
         locationName={update.location.name}
         locationCountry={update.location.country}
         placeId={update.location.place_id}
+        lat={update.location.position?.lat}
+        lng={update.location.position?.lng}
         dateStart={update.date.start}
         dateEnd={update.date.end}
       />

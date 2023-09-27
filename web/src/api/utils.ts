@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { toast } from "react-hot-toast";
+import { Update } from "./schema";
 
 export function sluggify(str: string) {
   str = str.replace(/^\s+|\s+$/g, ""); // trim
@@ -49,4 +50,10 @@ export function daterangeFormat(date1: Date, date2: Date) {
 
 export function formatIso(date: Date) {
   return format(date, "yyyy-MM-dd");
+}
+
+export function updateTitle(update: Update) {
+  return update.description.title
+    ? update.description.title
+    : update.location.name;
 }
