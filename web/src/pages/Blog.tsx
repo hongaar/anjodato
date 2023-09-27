@@ -18,7 +18,7 @@ import isEqual from "lodash.isequal";
 import { MouseEvent, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useInView } from "react-intersection-observer";
-import { useLocalStorage, useSessionStorage } from "usehooks-ts";
+import { useLocalStorage } from "usehooks-ts";
 import { Link } from "wouter";
 import {
   AddId,
@@ -110,9 +110,10 @@ export function Blog({ params }: { params: { label: string } }) {
   > | null>(null);
   const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", true);
   const [autoLoadMore, setAutoLoadMore] = useLocalStorage("autoLoadMore", true);
-  const [localLabels, setLocalLabels] = useSessionStorage<
-    AddId<Label>[] | null
-  >("labels", null);
+  const [localLabels, setLocalLabels] = useLocalStorage<AddId<Label>[] | null>(
+    "labels",
+    null,
+  );
   const [freshLabels] = useCollectionOnce(Collection.Labels);
   const [labels, setLabels] = useState(localLabels);
   const likes = useCollection(Collection.Likes);

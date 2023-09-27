@@ -14,6 +14,8 @@ import { useCollection, useQueryOnce } from "../hooks";
 
 const loader = new Loader({
   apiKey: GOOGLE_API_KEY!,
+  region: "NL",
+  language: "nl",
 });
 
 async function initMap(
@@ -31,6 +33,7 @@ async function initMap(
     zoom: 3,
     center: { lat: 0, lng: 73 },
     mapId: "27782f5b0452dce6",
+    mapTypeId: "terrain",
 
     // gestureHandling: "greedy",
 

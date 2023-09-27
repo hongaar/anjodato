@@ -38,10 +38,13 @@ export function Admin({ params }: { params: { workshop: string } }) {
         <nav>
           <ul>
             <li>
-              <Link href="/blog">✍️ Naar het blog</Link>
+              <Link href="/">✍️ Naar het blog</Link>
             </li>
             <li>
               <Link href="/kaart">🗺️ Naar de kaart</Link>
+            </li>
+            <li>
+              <Link href="/populair">❤️ Populaire foto's</Link>
             </li>
           </ul>
         </nav>

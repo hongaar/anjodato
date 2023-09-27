@@ -32,7 +32,7 @@ type Props = {
     width: number;
     height: number;
   }[];
-  location: Update["location"];
+  location?: Update["location"];
   likes: AddIdAndRef<Like>[] | null;
 };
 
@@ -129,7 +129,7 @@ function SlideLikeButton() {
 }
 
 /** Fullscreen plugin */
-export function LikePlugin({ augment, contains, addParent }: PluginProps) {
+export function LikePlugin({ augment }: PluginProps) {
   augment(({ toolbar, ...restProps }) => ({
     toolbar: addToolbarButton(toolbar, "like", <SlideLikeButton />),
     ...restProps,
@@ -192,28 +192,30 @@ export function Photos({ location, items, likes }: Props) {
       };
     });
 
-    const locationName = `${location.name}, ${location.country}`;
-    const locationPosition = location.position
-      ? `${location.position.lat},${location.position.lng}`
-      : locationName;
-    photos.unshift({
-      key: `googlemaps/${locationName}`,
-      src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
-      width: 1280,
-      height: 960,
-      srcSet: [
-        {
-          src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
-          width: 1280,
-          height: 960,
-        },
-        {
-          src: getMapsUrl(locationPosition, 400, 1, isDarkMode),
-          width: 800,
-          height: 600,
-        },
-      ],
-    });
+    if (location) {
+      const locationName = `${location.name}, ${location.country}`;
+      const locationPosition = location.position
+        ? `${location.position.lat},${location.position.lng}`
+        : locationName;
+      photos.unshift({
+        key: `googlemaps/${locationName}`,
+        src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
+        width: 1280,
+        height: 960,
+        srcSet: [
+          {
+            src: getMapsUrl(locationPosition, 640, 2, isDarkMode),
+            width: 1280,
+            height: 960,
+          },
+          {
+            src: getMapsUrl(locationPosition, 400, 1, isDarkMode),
+            width: 800,
+            height: 600,
+          },
+        ],
+      });
+    }
 
     return photos;
   }, [items, location, isDarkMode]);

@@ -33,7 +33,7 @@ export function Comments() {
             </tr>
           ) : comments.length > 0 ? (
             comments
-              .sort((a, b) => (a.date > b.date ? 1 : -1))
+              .sort((a, b) => (a.date > b.date ? -1 : 1))
               .map((comment) => (
                 <tr key={comment.id}>
                   <th scope="row">{formatIso(comment.date)}</th>
