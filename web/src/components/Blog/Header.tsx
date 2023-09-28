@@ -1,4 +1,3 @@
-import { Link } from "wouter";
 import { dateFormat, daterangeFormat } from "../../api";
 
 type Props = {
@@ -11,6 +10,7 @@ type Props = {
   lng?: number;
   dateStart: Date;
   dateEnd?: Date | null;
+  permalink?: boolean;
 };
 
 export function Header({
@@ -19,10 +19,9 @@ export function Header({
   locationName,
   locationCountry,
   placeId,
-  lat,
-  lng,
   dateStart,
   dateEnd,
+  permalink = true,
 }: Props) {
   console.debug("Rendering component Blog/Header");
 
@@ -46,9 +45,16 @@ export function Header({
             : dateFormat(dateStart)}
         </p>
       </hgroup>
-      <Link className="permalink" href={`/bericht/${id}`}>
-        🔗 Link naar dit bericht
-      </Link>
+      {permalink ? (
+        <a
+          className="permalink"
+          href={`/bericht/${id}`}
+          rel="noreferrer"
+          target="_blank"
+        >
+          ❐ Permalink
+        </a>
+      ) : null}
     </header>
   );
 }

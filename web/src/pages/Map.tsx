@@ -185,7 +185,12 @@ export function Map() {
           ✍️ Blog
         </Link>
       </nav>
-      <main className="container-fluid map">
+
+      <main
+        className={`container-fluid ${
+          updates !== null && updates.length > 0 ? "map" : ""
+        }`}
+      >
         <div className="grid">
           {updates === null ? (
             <article>

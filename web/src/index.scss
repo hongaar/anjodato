@@ -308,8 +308,9 @@ header {
 
   .permalink {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
 
     opacity: 0;
     transition: opacity 0.25s ease-in-out;
@@ -317,6 +318,7 @@ header {
     --color: var(--muted-color);
     --font-size: 0.875em;
 
+    background-color: var(--card-sectionning-background-color);
     color: var(--color);
     font-size: var(--font-size);
 
@@ -326,7 +328,7 @@ header {
   }
 
   &:hover .permalink {
-    opacity: 1;
+    opacity: 0.9;
   }
 }
 

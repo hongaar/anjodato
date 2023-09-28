@@ -7,9 +7,10 @@ import { Photos } from "./Photos";
 type Props = {
   update: AddId<UpdateDoc>;
   likes: AddIdAndRef<Like>[] | null;
+  permalink?: boolean;
 };
 
-export function Update({ update, likes }: Props) {
+export function Update({ update, likes, permalink = true }: Props) {
   return (
     <article key={update.id}>
       <Header
@@ -22,6 +23,7 @@ export function Update({ update, likes }: Props) {
         lng={update.location.position?.lng}
         dateStart={update.date.start}
         dateEnd={update.date.end}
+        permalink={permalink}
       />
       <Body text={update.description.body} />
       <Photos
