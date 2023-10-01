@@ -35,7 +35,7 @@ async function initMap(
     mapId: "27782f5b0452dce6",
     mapTypeId: "terrain",
 
-    // gestureHandling: "greedy",
+    gestureHandling: "greedy",
 
     zoomControl: false,
     mapTypeControl: false,
