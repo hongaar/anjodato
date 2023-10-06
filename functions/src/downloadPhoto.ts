@@ -18,6 +18,8 @@ type DownloadPhotoReturn = {
   publicUrl: string;
 };
 
+const MAX_AGE = 15552000;
+
 const fetch = (...args: Parameters<typeof fetchType>) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -60,6 +62,10 @@ export const downloadPhoto = onCall<
         res.body!.on("end", resolve);
         dest.on("error", reject);
       });
+    });
+
+    await file.setMetadata({
+      "Cache-Control": `public, max-age=${MAX_AGE}`,
     });
 
     logger.info(`Saved photo to ${data.path}`);
