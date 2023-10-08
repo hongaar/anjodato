@@ -51,6 +51,12 @@ export const downloadPhoto = onCall<
   try {
     const file = admin.storage().bucket().file(data.path);
 
+    await file.create();
+
+    await file.setMetadata({
+      "Cache-Control": `public, max-age=${MAX_AGE}`,
+    });
+
     await fetch(data.url).then((res) => {
       if (res.body === null) {
         throw new Error("Response body is empty");
@@ -62,10 +68,6 @@ export const downloadPhoto = onCall<
         res.body!.on("end", resolve);
         dest.on("error", reject);
       });
-    });
-
-    await file.setMetadata({
-      "Cache-Control": `public, max-age=${MAX_AGE}`,
     });
 
     logger.info(`Saved photo to ${data.path}`);
