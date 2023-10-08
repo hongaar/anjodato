@@ -51,19 +51,17 @@ export const downloadPhoto = onCall<
   try {
     const file = admin.storage().bucket().file(data.path);
 
-    await file.create();
-
-    await file.setMetadata({
-      "Cache-Control": `public, max-age=${MAX_AGE}`,
-    });
-
     await fetch(data.url).then((res) => {
       if (res.body === null) {
         throw new Error("Response body is empty");
       }
 
       return new Promise<void>((resolve, reject) => {
-        const dest = file.createWriteStream();
+        const dest = file.createWriteStream({
+          metadata: {
+            "Cache-Control": `public, max-age=${MAX_AGE}`,
+          },
+        });
         res.body!.pipe(dest);
         res.body!.on("end", resolve);
         dest.on("error", reject);
