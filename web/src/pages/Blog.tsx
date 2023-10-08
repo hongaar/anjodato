@@ -110,7 +110,14 @@ export function Blog({ params }: { params: { label: string } }) {
     DocumentData
   > | null>(null);
   const [sortDesc, setSortDesc] = useLocalStorage("sortDesc", true);
-  const [autoLoadMore, setAutoLoadMore] = useLocalStorage("autoLoadMore", true);
+  const [autoLoadMore, setAutoLoadMore] = useLocalStorage(
+    "autoLoadMore",
+    false,
+  );
+  const [showWhatsAppBanner, setShowWhatsAppBanner] = useLocalStorage(
+    "showWhatsAppBanner",
+    true,
+  );
   const [localLabels, setLocalLabels] = useLocalStorage<AddId<Label>[] | null>(
     "labels",
     null,
@@ -216,6 +223,25 @@ export function Blog({ params }: { params: { label: string } }) {
       </nav>
       <Labels labels={localLabels} activeName={label} />
       <main className="container-fluid">
+        {showWhatsAppBanner ? (
+          <p className="text-center">
+            🔔{" "}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href="https://chat.whatsapp.com/Iz6lHapa9Jl8WdWj7FGUDN"
+            >
+              Blijf op de hoogte van nieuwe berichten
+            </a>{" "}
+            via WhatsApp.{" "}
+            <button
+              className="inline outline secondary"
+              onClick={() => setShowWhatsAppBanner(false)}
+            >
+              ❌ Verberg dit bericht
+            </button>
+          </p>
+        ) : null}
         {localLabels === null ? null : updates === null ? (
           <article>
             <p aria-busy="true">Berichten laden...</p>
@@ -244,6 +270,17 @@ export function Blog({ params }: { params: { label: string } }) {
                   >
                     Meer berichten laden
                   </button>
+                </p>
+                <p className="text-center">
+                  🔔{" "}
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://chat.whatsapp.com/Iz6lHapa9Jl8WdWj7FGUDN"
+                  >
+                    Blijf op de hoogte van nieuwe berichten
+                  </a>{" "}
+                  via WhatsApp.
                 </p>
               </>
             ) : null}

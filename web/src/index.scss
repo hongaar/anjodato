@@ -301,6 +301,14 @@ button.link {
   background-color: var(--background-color);
 }
 
+button.inline {
+  padding: 0.25rem 0.5rem;
+  margin: 0;
+  width: unset;
+  outline: 0;
+  display: inline-block;
+}
+
 // permalink
 
 header {
