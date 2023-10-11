@@ -62,6 +62,7 @@
 .react-photo-album--row {
   > span {
     position: relative;
+    overflow: hidden;
 
     .likes {
       position: absolute;
