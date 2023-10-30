@@ -271,17 +271,6 @@ export function Blog({ params }: { params: { label: string } }) {
                     Meer berichten laden
                   </button>
                 </p>
-                <p className="text-center">
-                  🔔{" "}
-                  <a
-                    target="_blank"
-                    rel="noreferrer"
-                    href="https://chat.whatsapp.com/Iz6lHapa9Jl8WdWj7FGUDN"
-                  >
-                    Blijf op de hoogte van nieuwe berichten
-                  </a>{" "}
-                  via WhatsApp.
-                </p>
               </>
             ) : null}
           </>
@@ -290,6 +279,17 @@ export function Blog({ params }: { params: { label: string } }) {
             <p>Geen berichten</p>
           </article>
         )}
+        <p className="text-center">
+          🔔{" "}
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href="https://chat.whatsapp.com/Iz6lHapa9Jl8WdWj7FGUDN"
+          >
+            Blijf op de hoogte van nieuwe berichten
+          </a>{" "}
+          via WhatsApp.
+        </p>
       </main>
       <footer className="container-fluid">
         <div>
