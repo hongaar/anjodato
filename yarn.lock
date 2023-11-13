@@ -63,7 +63,7 @@ __metadata:
     "@testing-library/user-event": ^14.5.1
     "@types/gapi": 0.0.44
     "@types/gapi.client.photoslibrary": 1.0.0
-    "@types/google.accounts": 0.0.9
+    "@types/google.accounts": 0.0.14
     "@types/jest": ^29.5.5
     "@types/lodash.isequal": ^4
     "@types/node": ^20.6.2
@@ -4010,10 +4010,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/google.accounts@npm:0.0.9":
-  version: 0.0.9
-  resolution: "@types/google.accounts@npm:0.0.9"
-  checksum: 51d897dffabec354d36363ff03e44cf8c0e2387526149b7eb3296d885e429c45520cb6060a1f8c9b209d1236f1e8a2c22f9f8354876120832c2e0e198a921f9b
+"@types/google.accounts@npm:0.0.14":
+  version: 0.0.14
+  resolution: "@types/google.accounts@npm:0.0.14"
+  checksum: 6ec6864f5d5773e17b351e5b4a2dc8fee5e47d65c64b170f4bed99d4d534366b7d29320bd179f175f1cbf8aef35b3f268d890d894d49419570a1363079f07a75
   languageName: node
   linkType: hard
 

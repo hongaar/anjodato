@@ -61,7 +61,7 @@
   "devDependencies": {
     "@types/gapi": "0.0.44",
     "@types/gapi.client.photoslibrary": "1.0.0",
-    "@types/google.accounts": "0.0.9",
+    "@types/google.accounts": "0.0.14",
     "@types/lodash.isequal": "^4",
     "@types/randomcolor": "^0.5.7",
     "@types/react-helmet": "^6",
