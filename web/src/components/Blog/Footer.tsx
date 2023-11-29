@@ -82,6 +82,7 @@ export function Footer({ updateId }: Props) {
             <ol className="comments">
               {comments
                 .sort((a, b) => (a.date > b.date ? 1 : -1))
+                .filter((comment) => !comment.in_reply_to)
                 .map((comment) => (
                   <li key={comment.id}>
                     <small>
@@ -104,6 +105,35 @@ export function Footer({ updateId }: Props) {
                         </button>
                       </>
                     ) : null}
+                    <ol>
+                      {comments
+                        .sort((a, b) => (a.date > b.date ? 1 : -1))
+                        .filter((reply) => reply.in_reply_to === comment.id)
+                        .map((comment) => (
+                          <li key={comment.id}>
+                            <small>
+                              Door <strong>{comment.name}</strong> op{" "}
+                              <strong>{dateFormat(comment.date)}</strong>
+                            </small>
+                            <br />
+                            {nl2br(comment.comment)}
+                            {locallyCreated.includes(comment.id) &&
+                            addSeconds(comment.date, DELETE_GRACE_SECONDS) >
+                              new Date() ? (
+                              <>
+                                <br />
+                                <button
+                                  className="link"
+                                  type="button"
+                                  onClick={makeDeleteComment(comment.id)}
+                                >
+                                  Verwijder reactie
+                                </button>
+                              </>
+                            ) : null}
+                          </li>
+                        ))}
+                    </ol>
                   </li>
                 ))}
             </ol>

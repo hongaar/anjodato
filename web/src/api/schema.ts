@@ -80,6 +80,7 @@ export type Comment = {
   date: Date;
   name: string;
   comment: string;
+  in_reply_to: string;
 };
 
 export type Like = {

@@ -151,6 +151,7 @@
 
 #root > main.map {
   padding: 0;
+  max-width: 100%;
 }
 
 #map {
@@ -287,6 +288,11 @@ hr {
 b,
 strong {
   font-weight: 600;
+}
+
+button {
+  white-space: nowrap;
+  min-width: auto !important;
 }
 
 button.link {
@@ -446,6 +452,16 @@ ol.comments {
   small {
     --color: var(--muted-color);
     color: var(--color);
+  }
+
+  ol {
+    list-style: none;
+    padding: 0;
+
+    li {
+      border-left: 10px solid var(--card-border-color);
+      padding-left: calc(var(--spacing) * 0.5);
+    }
   }
 }
 
