@@ -1,5 +1,5 @@
 import { addSeconds } from "date-fns";
-import { FormEvent, MouseEvent, useRef } from "react";
+import { FormEvent, MouseEvent, useRef, useState } from "react";
 import nl2br from "react-nl2br";
 import { useLocalStorage } from "usehooks-ts";
 import { v4 as uuidv4 } from "uuid";
@@ -17,6 +17,7 @@ export function Footer({ updateId }: Props) {
 
   const path = [Collection.Updates, updateId, Collection.Comments] as const;
   const [comments, reload] = useCollectionOnce(...path);
+  const [inReplyTo, setInReplyTo] = useState<{ id: string; name: string }>();
   const writeComment = useDocWriter(...path);
   const deleteComment = useDocDeleter(...path);
   const [name, setName] = useLocalStorage("name", "");
@@ -39,6 +40,7 @@ export function Footer({ updateId }: Props) {
         date: new Date(),
         name: data.get("name") as string,
         comment: data.get("comment") as string,
+        ...(inReplyTo ? { in_reply_to: inReplyTo.id } : {}),
       });
       setLocallyCreated([...locallyCreated, id]);
     } catch (error) {
@@ -49,6 +51,7 @@ export function Footer({ updateId }: Props) {
     if (commentRef.current) {
       commentRef.current.value = "";
     }
+    setInReplyTo(undefined);
     submitButtonRef.current?.setAttribute("aria-busy", "false");
   }
 
@@ -90,7 +93,16 @@ export function Footer({ updateId }: Props) {
                       <strong>{dateFormat(comment.date)}</strong>
                     </small>
                     <br />
-                    {nl2br(comment.comment)}
+                    {nl2br(comment.comment)}{" "}
+                    <button
+                      className="reply link inline"
+                      type="button"
+                      onClick={() =>
+                        setInReplyTo({ id: comment.id, name: comment.name })
+                      }
+                    >
+                      Reageer
+                    </button>
                     {locallyCreated.includes(comment.id) &&
                     addSeconds(comment.date, DELETE_GRACE_SECONDS) >
                       new Date() ? (
@@ -142,6 +154,20 @@ export function Footer({ updateId }: Props) {
           )}
           <div>
             <form onSubmit={addComment}>
+              {inReplyTo ? (
+                <aside>
+                  <small>
+                    Schrijf reactie op <strong>{inReplyTo.name}</strong>:{" "}
+                  </small>
+                  <button
+                    className="inline outline secondary"
+                    type="button"
+                    onClick={() => setInReplyTo(undefined)}
+                  >
+                    ❌ Annuleren
+                  </button>
+                </aside>
+              ) : null}
               <label>
                 <span className="visually-hidden">Naam</span>
                 <input
