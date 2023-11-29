@@ -73,6 +73,8 @@ export function UpdatesEdit({ params }: { params: { id: string } }) {
       setInputValue("geo.name", doc.location.name);
       setInputValue("geo.country", doc.location.country);
       setInputValue("geo.place_id", doc.location.place_id);
+      setInputValue("geo.position.lat", doc.location.position?.lat);
+      setInputValue("geo.position.lng", doc.location.position?.lng);
       setInputValue("description.title", doc.description.title);
       setValue("description.body", doc.description.body);
       setValue("photos.album", doc.photos.album?.id);
