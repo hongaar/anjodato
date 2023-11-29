@@ -47,6 +47,11 @@ export function Comments() {
                         maxWidth: "20rem",
                       }}
                     >
+                      {comment.in_reply_to ? (
+                        <>
+                          <span className="label">reply</span>{" "}
+                        </>
+                      ) : null}
                       {comment.comment}
                     </td>
                     <td>
