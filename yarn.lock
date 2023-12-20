@@ -41,7 +41,7 @@ __metadata:
   resolution: "@anjodato/functions@workspace:functions"
   dependencies:
     "@types/cors": ^2
-    "@types/node": 20.6.2
+    "@types/node": 20.10.5
     cors: 2.8.5
     firebase-admin: ^11.10.1
     firebase-functions: ^4.4.1
@@ -66,7 +66,7 @@ __metadata:
     "@types/google.accounts": 0.0.9
     "@types/jest": ^29.5.5
     "@types/lodash.isequal": ^4
-    "@types/node": ^20.6.2
+    "@types/node": ^20.10.5
     "@types/randomcolor": ^0.5.7
     "@types/react": ^18.2.42
     "@types/react-dom": ^18.2.7
@@ -4196,10 +4196,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.6.2, @types/node@npm:^20.6.2":
-  version: 20.6.2
-  resolution: "@types/node@npm:20.6.2"
-  checksum: 96fe5303872640a173f3fd43e289a451776ed5b8f0090094447c6790b43f23fb607eea8268af0829cef4d132e5afa0bfa4cd871aa7412e9042a414a698e9e971
+"@types/node@npm:20.10.5, @types/node@npm:^20.10.5":
+  version: 20.10.5
+  resolution: "@types/node@npm:20.10.5"
+  dependencies:
+    undici-types: ~5.26.4
+  checksum: e216b679f545a8356960ce985a0e53c3a58fff0eacd855e180b9e223b8db2b5bd07b744a002b8c1f0c37f9194648ab4578533b5c12df2ec10cc02f61d20948d2
   languageName: node
   linkType: hard
 
@@ -18072,6 +18074,13 @@ __metadata:
   version: 1.13.6
   resolution: "underscore@npm:1.13.6"
   checksum: d5cedd14a9d0d91dd38c1ce6169e4455bb931f0aaf354108e47bd46d3f2da7464d49b2171a5cf786d61963204a42d01ea1332a903b7342ad428deaafaf70ec36
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 3192ef6f3fd5df652f2dc1cd782b49d6ff14dc98e5dced492aa8a8c65425227da5da6aafe22523c67f035a272c599bb89cfe803c1db6311e44bed3042fc25487
   languageName: node
   linkType: hard
 
