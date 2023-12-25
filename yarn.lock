@@ -61,7 +61,7 @@ __metadata:
     "@testing-library/jest-dom": ^6.1.3
     "@testing-library/react": ^14.0.0
     "@testing-library/user-event": ^14.5.1
-    "@types/gapi": 0.0.44
+    "@types/gapi": 0.0.47
     "@types/gapi.client.photoslibrary": 1.0.0
     "@types/google.accounts": 0.0.9
     "@types/jest": ^29.5.5
@@ -3993,10 +3993,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/gapi@npm:0.0.44":
-  version: 0.0.44
-  resolution: "@types/gapi@npm:0.0.44"
-  checksum: 72f01d266e374383e40f2a2007b3bdbde048f665e945593fcf9ada09c0272bef8306915032c7ec644669a538b81797384554fec79e5ea337f91da0315689b693
+"@types/gapi@npm:0.0.47":
+  version: 0.0.47
+  resolution: "@types/gapi@npm:0.0.47"
+  checksum: 9f18e5d22a549f0b0b99c43e63d2ed2f7438ee8edf12963f7edb3934592908f8ce24ad23cc5e36952faa4d9c486625b70d3dd39f4a905a397507ceb8f8ef41ce
   languageName: node
   linkType: hard
 
