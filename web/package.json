@@ -59,7 +59,7 @@
     ]
   },
   "devDependencies": {
-    "@types/gapi": "0.0.44",
+    "@types/gapi": "0.0.47",
     "@types/gapi.client.photoslibrary": "1.0.0",
     "@types/google.accounts": "0.0.9",
     "@types/lodash.isequal": "^4",
