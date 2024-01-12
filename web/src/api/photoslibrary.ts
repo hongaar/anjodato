@@ -44,7 +44,7 @@ async function pagesIterator<P, S, const K extends keyof S>(
     }>;
 
     // @ts-ignore
-    collection = [...collection, ...typedResponse.result[key]];
+    collection = [...collection, ...(typedResponse.result[key] || [])];
 
     if (typedResponse.result.nextPageToken) {
       return pagesIterator(
@@ -75,7 +75,7 @@ async function pagesIteratorInjectRequestBody<P, R, S, const K extends keyof S>(
     }>;
 
     // @ts-ignore
-    collection = [...collection, ...typedResponse.result[key]];
+    collection = [...collection, ...(typedResponse.result[key] || [])];
 
     if (typedResponse.result.nextPageToken) {
       return pagesIteratorInjectRequestBody(
