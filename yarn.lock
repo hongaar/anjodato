@@ -85,7 +85,7 @@ __metadata:
     react-nl2br: 1.0.4
     react-photo-album: 2.3.0
     react-scripts: 5.0.1
-    sass: ^1.67.0
+    sass: ^1.72.0
     typescript: ^5.2.2
     usehooks-ts: 2.9.1
     web-vitals: ^3.4.0
@@ -16347,16 +16347,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.67.0":
-  version: 1.67.0
-  resolution: "sass@npm:1.67.0"
+"sass@npm:^1.72.0":
+  version: 1.72.0
+  resolution: "sass@npm:1.72.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 9e7566e8b7386cf265dddcdb266a023fb5759c5a8f48a11da199c8bf419e5f08f4ff6404d85d6bf5eac01e1f7c7061fdb6b7b65cbfda164e59b0a06b72ac8567
+  checksum: f420079c7d51660b7256ee52463c1499ede36f7fd5c8ef50c687451777ad641509001454dea45244073cedd7c00e7a3bc1c362e55206ac6686171b994edb41e4
   languageName: node
   linkType: hard
 
