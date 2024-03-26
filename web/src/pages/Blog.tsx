@@ -224,7 +224,7 @@ export function Blog({ params }: { params: { label: string } }) {
       <Labels labels={localLabels} activeName={label} />
       <main className="container-fluid">
         {showWhatsAppBanner ? (
-          <p className="text-center">
+          <div className="text-center">
             🔔{" "}
             <a
               target="_blank"
@@ -240,11 +240,11 @@ export function Blog({ params }: { params: { label: string } }) {
             >
               ❌ Verberg dit bericht
             </button>
-          </p>
+          </div>
         ) : null}
         {localLabels === null ? null : updates === null ? (
-          <article>
-            <p aria-busy="true">Berichten laden...</p>
+          <article className="text-center">
+            <span aria-busy="true">Berichten laden...</span>
           </article>
         ) : updates.length > 0 ? (
           <>
@@ -254,15 +254,15 @@ export function Blog({ params }: { params: { label: string } }) {
             {updatesCount !== null && updatesCount > updates.length ? (
               <>
                 {autoLoadMore ? null : (
-                  <p className="text-center">
+                  <div className="text-center margin-bottom">
                     {updatesCount - updates.length === 1
                       ? `Er is nog 1 ${sortDesc ? "ouder" : "nieuwer"} bericht.`
                       : `Er zijn nog ${updatesCount - updates.length} ${
                           sortDesc ? "oudere" : "nieuwere"
                         } berichten.`}
-                  </p>
+                  </div>
                 )}
-                <p className="text-center">
+                <div className="text-center margin-bottom">
                   <button
                     ref={inViewRef}
                     className={`inline-button ${autoLoadMore ? "link" : ""}`}
@@ -270,7 +270,7 @@ export function Blog({ params }: { params: { label: string } }) {
                   >
                     Meer berichten laden
                   </button>
-                </p>
+                </div>
               </>
             ) : null}
           </>
@@ -279,7 +279,7 @@ export function Blog({ params }: { params: { label: string } }) {
             <p>Geen berichten</p>
           </article>
         )}
-        <p className="text-center">
+        <div className="text-center">
           🔔{" "}
           <a
             target="_blank"
@@ -289,7 +289,7 @@ export function Blog({ params }: { params: { label: string } }) {
             Blijf op de hoogte van nieuwe berichten
           </a>{" "}
           via WhatsApp.
-        </p>
+        </div>
       </main>
       <footer className="container-fluid">
         <div>

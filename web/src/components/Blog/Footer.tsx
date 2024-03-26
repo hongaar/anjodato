@@ -80,7 +80,7 @@ export function Footer({ updateId }: Props) {
         <h3>Reacties</h3>
         <div className="grid">
           {comments === null ? (
-            <p aria-busy="true">Aan het laden...</p>
+            <span aria-busy="true">Aan het laden...</span>
           ) : comments.length > 0 ? (
             <ol className="comments">
               {comments

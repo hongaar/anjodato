@@ -193,8 +193,8 @@ export function Map() {
       >
         <div className="grid">
           {updates === null ? (
-            <article>
-              <p aria-busy="true">Kaart laden...</p>
+            <article className="text-center">
+              <span aria-busy="true">Kaart laden...</span>
             </article>
           ) : updates.length > 0 ? (
             <div id="map" />

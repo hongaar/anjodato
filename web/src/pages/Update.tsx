@@ -43,16 +43,16 @@ export function Update({ params }: { params: { id: string } }) {
           <title>{updateTitle(update)}</title>
         </Helmet>
       ) : null}
-      <header className="container-fluid">
+      {/* <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
           <p>Bericht</p>
         </hgroup>
-      </header>
+      </header> */}
       <main className="container-fluid">
         {update === null ? (
-          <article>
-            <p aria-busy="true">Bericht laden...</p>
+          <article className="text-center">
+            <span aria-busy="true">Bericht laden...</span>
           </article>
         ) : (
           <UpdateComponent

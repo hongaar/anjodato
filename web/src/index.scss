@@ -291,6 +291,10 @@ hr {
   margin: calc(var(--spacing) * 1.5) 0;
 }
 
+p {
+  font-family: "Lora", serif;
+}
+
 b,
 strong {
   font-weight: 600;
@@ -580,6 +584,10 @@ button[type="submit"] {
 
 .text-right {
   text-align: right;
+}
+
+.margin-bottom {
+  margin-bottom: var(--typography-spacing-vertical);
 }
 
 .emoji {

@@ -79,7 +79,7 @@ export function Activity() {
             <div>
               <h3>Recente reacties</h3>
               {comments === null || updates === null ? (
-                <p aria-busy="true">Reacties laden...</p>
+                <span aria-busy="true">Reacties laden...</span>
               ) : comments.length > 0 ? (
                 <ol className="comments">
                   {comments.map((comment) => {
@@ -112,7 +112,7 @@ export function Activity() {
             <div>
               <h3>Mooiste foto's</h3>
               {popularPhotoItems === null ? (
-                <p aria-busy="true">Foto's laden...</p>
+                <span aria-busy="true">Foto's laden...</span>
               ) : popularPhotoItems.length > 0 ? (
                 <Photos items={popularPhotoItems} likes={likes} />
               ) : (
