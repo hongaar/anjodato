@@ -67,12 +67,12 @@ export function Activity() {
       <Helmet>
         <title>Populair</title>
       </Helmet>
-      <header className="container-fluid">
+      {/* <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
           <p>Reacties</p>
         </hgroup>
-      </header>
+      </header> */}
       <main className="container-fluid">
         <article>
           <div className="grid">

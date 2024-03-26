@@ -210,12 +210,12 @@ export function Blog({ params }: { params: { label: string } }) {
       <Helmet>
         <title>{label ? `${label} / ` : ""} Blog</title>
       </Helmet>
-      <header className="container-fluid">
+      {/* <header className="container-fluid">
         <hgroup>
           <h1>AnJoDaTo</h1>
           <p>Blog{label ? ` / ${label}` : null}</p>
         </hgroup>
-      </header>
+      </header> */}
       <nav className="sticky">
         <Link role="button" href="/kaart">
           🗺️ Kaart

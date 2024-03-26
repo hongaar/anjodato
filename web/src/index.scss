@@ -281,6 +281,12 @@ h3 {
   font-weight: normal;
 }
 
+h2 {
+  font-size: 2.75rem;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
 hr {
   margin: calc(var(--spacing) * 1.5) 0;
 }
@@ -482,7 +488,19 @@ ol.comments {
   }
 }
 
+article {
+  box-shadow: none;
+}
+
+article header,
 article footer {
+  background: none;
+  border-width: 3px;
+}
+
+article footer {
+  background: none;
+
   form {
     position: sticky;
     top: calc(var(--typography-spacing-vertical) * 1);
@@ -581,4 +599,10 @@ button[type="submit"] {
   color: var(--code-color);
   line-height: initial;
   // font-size: 0.875em;
+}
+
+.mobile-only {
+  @media (min-width: 768px) {
+    display: none;
+  }
 }

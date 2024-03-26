@@ -39,7 +39,8 @@ export function Header({
           >
             {title ? `${locationName}, ${locationCountry}` : locationCountry}
           </a>{" "}
-          &nbsp; 📅{" "}
+          &nbsp; <br className="mobile-only" />
+          📅{" "}
           {dateEnd
             ? daterangeFormat(dateStart, dateEnd)
             : dateFormat(dateStart)}
